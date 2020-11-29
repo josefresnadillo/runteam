@@ -1,2 +1,2 @@
 # RUNMATES
-Run with your friends and challenge another teams
+Run with your friends and challenge other teams
