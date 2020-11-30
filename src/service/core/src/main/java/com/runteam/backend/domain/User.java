@@ -6,24 +6,21 @@ import java.util.Objects;
 public class User {
     private final UserId id;
     private final String username;
-    private final String token;
-    private final UserStatus status;
     private final UserDetails userDetails;
+    private final UserStatus status;
     private final OffsetDateTime activation;
     private final Statistics statistics;
 
     public User(final UserId id,
                 final String username,
-                final String token,
-                final UserStatus status,
                 final UserDetails userDetails,
+                final UserStatus status,
                 final OffsetDateTime activation,
                 final Statistics statistics){
         this.id = id;
         this.username = username;
-        this.token = token;
-        this.status = status;
         this.userDetails = userDetails;
+        this.status = status;
         this.activation = activation;
         this.statistics = statistics;
     }
@@ -34,10 +31,6 @@ public class User {
 
     public String getUsername() {
         return username;
-    }
-
-    public String getToken() {
-        return token;
     }
 
     public UserStatus getStatus() {
@@ -74,7 +67,6 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", token='" + token + '\'' +
                 ", status=" + status +
                 ", userDetails=" + userDetails +
                 ", activation=" + activation +
