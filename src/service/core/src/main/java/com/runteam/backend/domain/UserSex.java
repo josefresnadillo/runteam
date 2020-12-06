@@ -2,7 +2,8 @@ package com.runteam.backend.domain;
 
 // Value Object
 
-public enum TeamStatus {
-    ACTIVE,
-    INACTIVE
+public enum UserSex {
+    MALE,
+    FEMALE,
+    OTHER
 }

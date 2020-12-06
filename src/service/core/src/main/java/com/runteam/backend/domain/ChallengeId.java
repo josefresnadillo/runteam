@@ -2,6 +2,8 @@ package com.runteam.backend.domain;
 
 import java.util.UUID;
 
+// Value Object
+
 public class ChallengeId {
     private final String id;
 

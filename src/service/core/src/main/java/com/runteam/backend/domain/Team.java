@@ -1,57 +1,18 @@
 package com.runteam.backend.domain;
 
+import java.time.OffsetDateTime;
 import java.util.List;
+
+// Aggregate
 
 public class Team {
     private final TeamId id;
-    private final String name;
-    private final String displayName;
+    private final UserId owner;
+    private final TeamDetails details;
     private final TeamStatus status;
-    private final String imageUrl;
-    private final List<TeamMember> members;
-    private final Statistics statistics;
+    private final OffsetDateTime activationDate;
+    private final List<TeamMember> activeMembers;
+    private final List<TeamMember> inactiveMembers;
+    private final List<TeamMember> applicantMembers;
 
-    public Team(final TeamId id,
-                final String name,
-                final String displayName,
-                final TeamStatus status,
-                final String imageUrl,
-                final List<TeamMember> members,
-                final Statistics statistics){
-        this.id = id;
-        this.name = name;
-        this.displayName = displayName;
-        this.status = status;
-        this.imageUrl = imageUrl;
-        this.members = members;
-        this.statistics = statistics;
-    }
-
-    public TeamId getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public TeamStatus getStatus() {
-        return status;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public List<TeamMember> getMembers() {
-        return members;
-    }
-
-    public Statistics getStatistics() {
-        return statistics;
-    }
 }
