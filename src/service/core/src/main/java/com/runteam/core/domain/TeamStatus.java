@@ -1,4 +1,4 @@
-package com.runteam.backend.domain;
+package com.runteam.core.domain;
 
 // Value Object
 
