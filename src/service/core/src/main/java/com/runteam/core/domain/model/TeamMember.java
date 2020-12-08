@@ -1,28 +1,28 @@
-package com.runteam.core.domain;
+package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
 // Value Object
 
-public class ChallengeMember {
-    private final TeamId teamId;
+public class TeamMember {
+    private final UserId userId;
     private final OffsetDateTime activeFrom;
     private final OffsetDateTime activeTo;
     private final Statistics statistics;
 
-    public ChallengeMember(final TeamId teamId,
-                           final OffsetDateTime activeFrom,
-                           final OffsetDateTime activeTo,
-                           final Statistics statistics) {
-        this.teamId = teamId;
+    public TeamMember(final UserId userId,
+                      final OffsetDateTime activeFrom,
+                      final OffsetDateTime activeTo,
+                      final Statistics statistics) {
+        this.userId = userId;
         this.activeFrom = activeFrom;
         this.activeTo = activeTo;
         this.statistics = statistics;
     }
 
-    public TeamId getTeamId() {
-        return teamId;
+    public UserId getUserId() {
+        return userId;
     }
 
     public OffsetDateTime getActiveFrom() {
@@ -45,8 +45,8 @@ public class ChallengeMember {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ChallengeMember that = (ChallengeMember) o;
-        return Objects.equals(teamId, that.teamId) &&
+        TeamMember that = (TeamMember) o;
+        return Objects.equals(userId, that.userId) &&
                 Objects.equals(activeFrom, that.activeFrom) &&
                 Objects.equals(activeTo, that.activeTo) &&
                 Objects.equals(statistics, that.statistics);
@@ -54,15 +54,15 @@ public class ChallengeMember {
 
     @Override
     public int hashCode() {
-        return Objects.hash(teamId, activeFrom, statistics);
+        return Objects.hash(userId, activeFrom, activeTo, statistics);
     }
 
     @Override
     public String toString() {
-        return "ChallengeMember{" +
-                "teamId=" + teamId +
+        return "TeamMember{" +
+                "userId=" + userId +
                 ", activeFrom=" + activeFrom +
-                ", activeFrom=" + activeTo +
+                ", activeTo=" + activeTo +
                 ", statistics=" + statistics +
                 '}';
     }

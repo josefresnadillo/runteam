@@ -1,4 +1,4 @@
-package com.runteam.core.domain;
+package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class Challenge {
 
-    public static final OffsetDateTime MAX_VALID_TO = OffsetDateTime.of(2048,
+    public static final OffsetDateTime MAX_TEAM_VALID_TO = OffsetDateTime.of(2048,
             1,
             1,
             0,
@@ -22,12 +22,12 @@ public class Challenge {
 
     private final ChallengeId id;
     private final UserId owner;
-    private ChallengeDetails details;
-    private OffsetDateTime activationDate;
-    private ChallengeGoal goal;
-    private ChallengeStatus status;
-    private List<ChallengeMember> members;
-    private List<ChallengeMember> applicants;
+    private ChallengeDetails details = ChallengeDetails.builder().build();
+    private OffsetDateTime activationDate = OffsetDateTime.now();
+    private ChallengeGoal goal = ChallengeGoal.zero();
+    private ChallengeStatus status = ChallengeStatus.INACTIVE;
+    private List<ChallengeMember> members = List.of();
+    private List<TeamId> applicants = List.of();
 
     public Challenge(final ChallengeId id,
                      final UserId owner) {
@@ -47,7 +47,7 @@ public class Challenge {
         return details;
     }
 
-    public void setDetails(ChallengeDetails details) {
+    public void setDetails(final ChallengeDetails details) {
         this.details = details;
     }
 
@@ -55,7 +55,7 @@ public class Challenge {
         return activationDate;
     }
 
-    public void setActivationDate(OffsetDateTime activationDate) {
+    public void setActivationDate(final OffsetDateTime activationDate) {
         this.activationDate = activationDate;
     }
 
@@ -63,7 +63,7 @@ public class Challenge {
         return goal;
     }
 
-    public void setGoal(ChallengeGoal goal) {
+    public void setGoal(final ChallengeGoal goal) {
         this.goal = goal;
     }
 
@@ -71,7 +71,7 @@ public class Challenge {
         return status;
     }
 
-    public void setStatus(ChallengeStatus status) {
+    public void setStatus(final ChallengeStatus status) {
         this.status = status;
     }
 
@@ -79,16 +79,20 @@ public class Challenge {
         return members;
     }
 
-    public void setMembers(List<ChallengeMember> members) {
+    public void setMembers(final List<ChallengeMember> members) {
         this.members = members;
     }
 
-    public List<ChallengeMember> getApplicants() {
+    public List<TeamId> getApplicants() {
         return applicants;
     }
 
-    public void setApplicants(List<ChallengeMember> applicants) {
-        this.applicants = applicants;
+    public void setApplicants(final List<TeamId> applicants) {
+        this.applicants = applicants.stream().distinct().collect(Collectors.toList());
+    }
+
+    public Statistics statistics() {
+        return this.members.stream().map(ChallengeMember::getStatistics).reduce(Statistics.EMPTY, Statistics::add);
     }
 
     public List<ChallengeMember> getActiveMembers() {
@@ -103,50 +107,45 @@ public class Challenge {
                 .collect(Collectors.toList());
     }
 
-    public void addMember(final TeamId teamId) {
-        final Optional<ChallengeMember> applicant = findMemberById(this.applicants, teamId);
-        if (applicant.isPresent()) {
-            this.applicants.remove(applicant.get());
-            this.members.add(new ChallengeMember(teamId,
-                    OffsetDateTime.now(),
-                    MAX_VALID_TO,
-                    new Statistics(0L, 0L, 0L)));
-            return;
+    public boolean addApplicant(final TeamId teamId) {
+        if (!this.applicants.contains(teamId)) {
+            return this.applicants.add(teamId);
         }
-        final Optional<ChallengeMember> challengeMember = findMemberById(this.members, teamId);
-        if (challengeMember.isEmpty()) {
-            this.members.add(new ChallengeMember(teamId,
-                    OffsetDateTime.now(),
-                    MAX_VALID_TO,
-                    Statistics.zero()));
-            return;
-        }
-        if (!challengeMember.get().isActive()) {
-            this.members.add(new ChallengeMember(teamId,
-                    challengeMember.get().getActiveFrom(),
-                    MAX_VALID_TO,
-                    challengeMember.get().getStatistics()));
-        }
+        return false;
     }
 
-    public void removeMember(final TeamId teamId) {
-        final Optional<ChallengeMember> applicant = findMemberById(this.applicants, teamId);
-        if (applicant.isPresent()) {
-            this.applicants.remove(applicant.get());
-            return;
+    public boolean removeApplicant(final TeamId teamId) {
+        return this.applicants.add(teamId);
+    }
+
+    public boolean addMember(final TeamId teamId) {
+        removeApplicant(teamId);
+        final Optional<ChallengeMember> challengeMember = findMemberById(this.members, teamId);
+        if (challengeMember.isEmpty()) {
+            return this.members.add(new ChallengeMember(teamId,
+                    OffsetDateTime.now(),
+                    MAX_TEAM_VALID_TO,
+                    Statistics.zero()));
         }
+        if (!challengeMember.get().isActive()) {
+            return this.members.add(new ChallengeMember(teamId,
+                    challengeMember.get().getActiveFrom(),
+                    MAX_TEAM_VALID_TO,
+                    challengeMember.get().getStatistics()));
+        }
+        return false;
+    }
+
+    public boolean removeMember(final TeamId teamId) {
         final Optional<ChallengeMember> challengeMember = findMemberById(this.getActiveMembers(), teamId);
         if (challengeMember.isPresent()) {
             this.members.remove(challengeMember.get());
-            this.members.add(new ChallengeMember(teamId,
+            return this.members.add(new ChallengeMember(teamId,
                     challengeMember.get().getActiveFrom(),
                     OffsetDateTime.now(),
                     challengeMember.get().getStatistics()));
         }
-    }
-
-    public Statistics statistics() {
-        return this.members.stream().map(ChallengeMember::getStatistics).reduce(Statistics.EMPTY, Statistics::add);
+        return false;
     }
 
     private Optional<ChallengeMember> findMemberById(final List<ChallengeMember> teams,

@@ -1,4 +1,4 @@
-package com.runteam.core.domain;
+package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class Team {
 
-    public static final OffsetDateTime MAX_VALID_TO = OffsetDateTime.of(2048,
+    public static final OffsetDateTime MAX_MEMBER_VALID_TO = OffsetDateTime.of(2048,
             1,
             1,
             0,
@@ -22,11 +22,11 @@ public class Team {
 
     private final TeamId id;
     private final UserId owner;
-    private TeamDetails details = TeamDetails.EMPTY;
+    private TeamDetails details = TeamDetails.builder().build();
     private TeamStatus status = TeamStatus.INACTIVE;
     private OffsetDateTime activationDate = OffsetDateTime.now();
     private List<TeamMember> members = List.of();
-    private List<TeamMember> applicants = List.of();
+    private List<UserId> applicants = List.of();
 
     public Team(final TeamId id,
                 final UserId owner) {
@@ -46,7 +46,7 @@ public class Team {
         return details;
     }
 
-    public void setDetails(TeamDetails details) {
+    public void setDetails(final TeamDetails details) {
         this.details = details;
     }
 
@@ -54,7 +54,7 @@ public class Team {
         return status;
     }
 
-    public void setStatus(TeamStatus status) {
+    public void setStatus(final TeamStatus status) {
         this.status = status;
     }
 
@@ -62,7 +62,7 @@ public class Team {
         return activationDate;
     }
 
-    public void setActivationDate(OffsetDateTime activationDate) {
+    public void setActivationDate(final OffsetDateTime activationDate) {
         this.activationDate = activationDate;
     }
 
@@ -70,20 +70,20 @@ public class Team {
         return members;
     }
 
-    public void setMembers(List<TeamMember> members) {
+    public void setMembers(final List<TeamMember> members) {
         this.members = members;
     }
 
-    public List<TeamMember> getApplicants() {
+    public List<UserId> getApplicants() {
         return applicants;
     }
 
-    public void setApplicants(List<TeamMember> applicants) {
-        this.applicants = applicants;
+    public void setApplicants(final List<UserId> applicants) {
+        this.applicants = applicants.stream().distinct().collect(Collectors.toList());
     }
 
     public Statistics statistics() {
-        return this.members.stream().map(TeamMember::getStatistics).reduce(Statistics.EMPTY, Statistics::add);
+        return this.members.stream().map(TeamMember::getStatistics).reduce(Statistics.zero(), Statistics::add);
     }
 
     public List<TeamMember> getActiveMembers() {
@@ -98,36 +98,36 @@ public class Team {
                 .collect(Collectors.toList());
     }
 
-    public boolean addMember(final UserId userId) {
-        final Optional<TeamMember> applicant = findMemberById(this.applicants, userId);
-        if (applicant.isPresent()) {
-            this.applicants.remove(applicant.get());
-            return this.members.add(new TeamMember(userId,
-                    OffsetDateTime.now(),
-                    MAX_VALID_TO,
-                    Statistics.zero()));
+    public boolean addApplicant(final UserId userId) {
+        if (!this.applicants.contains(userId)) {
+            return this.applicants.add(userId);
         }
+        return false;
+    }
+
+    public boolean removeApplicant(final UserId userId) {
+        return this.applicants.add(userId);
+    }
+
+    public boolean addMember(final UserId userId) {
+        removeApplicant(userId);
         final Optional<TeamMember> teamMember = findMemberById(this.members, userId);
         if (teamMember.isEmpty()) {
             return this.members.add(new TeamMember(userId,
                     OffsetDateTime.now(),
-                    MAX_VALID_TO,
+                    MAX_MEMBER_VALID_TO,
                     Statistics.zero()));
         }
         if (!teamMember.get().isActive()) {
             return this.members.add(new TeamMember(userId,
                     teamMember.get().getActiveFrom(),
-                    MAX_VALID_TO,
+                    MAX_MEMBER_VALID_TO,
                     teamMember.get().getStatistics()));
         }
         return false;
     }
 
     public boolean removeMember(final UserId userId) {
-        final Optional<TeamMember> applicant = findMemberById(this.applicants, userId);
-        if (applicant.isPresent()) {
-            return this.applicants.remove(applicant.get());
-        }
         final Optional<TeamMember> member = findMemberById(this.getActiveMembers(), userId);
         if (member.isPresent()) {
             this.members.remove(member.get());

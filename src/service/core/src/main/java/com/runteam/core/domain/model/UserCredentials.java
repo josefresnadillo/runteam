@@ -1,4 +1,4 @@
-package com.runteam.core.domain;
+package com.runteam.core.domain.model;
 
 // Value Object
 

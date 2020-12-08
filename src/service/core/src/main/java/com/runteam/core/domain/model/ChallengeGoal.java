@@ -1,4 +1,4 @@
-package com.runteam.core.domain;
+package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -42,6 +42,13 @@ public class ChallengeGoal {
 
     public OffsetDateTime getActiveTo() {
         return activeTo;
+    }
+
+    public static ChallengeGoal zero(){
+        return new ChallengeGoal(0L,
+                0L,
+                OffsetDateTime.of(170, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC),
+                OffsetDateTime.of(170, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC));
     }
 
     @Override

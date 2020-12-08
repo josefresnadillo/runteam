@@ -1,4 +1,4 @@
-package com.runteam.core.domain;
+package com.runteam.core.domain.model;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -6,9 +6,6 @@ import java.util.Objects;
 // Value Object
 
 public class UserDetails {
-
-    public static final UserDetails EMPTY = UserDetails.builder().build();
-
     private final String displayName; // Example Jose Fresnadillo
     private final String email;
     private final String imageUrl;
@@ -98,7 +95,7 @@ public class UserDetails {
         private String imageUrl = "";
         private LocalDate birthday = LocalDate.of(1970, 1, 1);
         private UserSex sex = UserSex.FEMALE;
-        private String city = "World";
+        private String city = "";
         private String countryCode = "es"; // ISO 3166-1-alpha-2
         private String language = "es";
 

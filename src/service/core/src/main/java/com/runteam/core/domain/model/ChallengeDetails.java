@@ -1,4 +1,4 @@
-package com.runteam.core.domain;
+package com.runteam.core.domain.model;
 
 import java.util.List;
 import java.util.Objects;
@@ -6,9 +6,6 @@ import java.util.Objects;
 // Value Object
 
 public class ChallengeDetails {
-
-    public static final ChallengeDetails EMPTY = new ChallengeDetails("", "", "", List.of());
-
     private final String name; // Example @challenge1
     private final String displayName; // Example The best challenge
     private final String imageUrl;
@@ -64,5 +61,46 @@ public class ChallengeDetails {
                 ", imageUrl='" + imageUrl + '\'' +
                 ", tags=" + tags +
                 '}';
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String name = ""; // Example @challenge1
+        private String displayName = ""; // Example The best challenge
+        private String imageUrl = "";
+        private List<String> tags = List.of(); // Example #runbest #100km
+
+        public Builder() {
+        }
+
+        public Builder name(final String value) {
+            this.name = value;
+            return this;
+        }
+
+        public Builder displayName(final String value) {
+            this.displayName = value;
+            return this;
+        }
+
+        public Builder imageUrl(final String value) {
+            this.imageUrl = value;
+            return this;
+        }
+
+        public Builder tags(final List<String> values) {
+            this.tags = values;
+            return this;
+        }
+
+        public ChallengeDetails build() {
+            return new ChallengeDetails(this.name,
+                    this.displayName,
+                    this.imageUrl,
+                    this.tags);
+        }
     }
 }

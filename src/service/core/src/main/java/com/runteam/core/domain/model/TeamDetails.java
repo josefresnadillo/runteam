@@ -1,13 +1,10 @@
-package com.runteam.core.domain;
+package com.runteam.core.domain.model;
 
 // Value Object
 
 import java.util.Objects;
 
 public class TeamDetails {
-
-    public static final TeamDetails EMPTY = TeamDetails.builder().build();
-
     private final String name; // example "@team1"
     private final String displayName; // example "The Best Team"
     private final String imageUrl;
@@ -79,11 +76,11 @@ public class TeamDetails {
     }
 
     public static class Builder {
-        private String name; // example "@team1"
-        private String displayName; // example "The Best Team"
-        private String imageUrl;
-        private String city;
-        private String countryCode; // ISO 3166-1-alpha-2 2 letters
+        private String name = ""; // example "@team1"
+        private String displayName = ""; // example "The Best Team"
+        private String imageUrl = "";
+        private String city = "";
+        private String countryCode = "es"; // ISO 3166-1-alpha-2 2 letters
 
         public Builder() {
         }

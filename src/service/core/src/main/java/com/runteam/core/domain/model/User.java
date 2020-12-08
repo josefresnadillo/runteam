@@ -1,4 +1,4 @@
-package com.runteam.core.domain;
+package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -11,8 +11,9 @@ public class User {
     private UserDetails details = UserDetails.EMPTY;
     private UserStatus status = UserStatus.INACTIVE;
     private UserPrivacy privacy = UserPrivacy.PUBLIC;
+    private UserSubscriptionType subscriptionType = UserSubscriptionType.BASIC;
     private OffsetDateTime activationDate = OffsetDateTime.now();
-    private Statistics statistics = Statistics.EMPTY;
+    private Statistics statistics = Statistics.zero();
 
     public User(final UserId id) {
         this.id = id;
@@ -52,6 +53,14 @@ public class User {
 
     public void setPrivacy(UserPrivacy privacy) {
         this.privacy = privacy;
+    }
+
+    public UserSubscriptionType getSubscriptionType() {
+        return subscriptionType;
+    }
+
+    public void setSubscriptionType(UserSubscriptionType subscriptionType) {
+        this.subscriptionType = subscriptionType;
     }
 
     public OffsetDateTime getActivationDate() {
