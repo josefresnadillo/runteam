@@ -8,7 +8,7 @@ import java.util.Objects;
 public class User {
     private final UserId id;
     private UserCredentials credentials = UserCredentials.EMPTY;
-    private UserDetails details = UserDetails.EMPTY;
+    private UserDetails details = UserDetails.builder().build();
     private UserStatus status = UserStatus.INACTIVE;
     private UserPrivacy privacy = UserPrivacy.PUBLIC;
     private UserSubscriptionType subscriptionType = UserSubscriptionType.BASIC;
