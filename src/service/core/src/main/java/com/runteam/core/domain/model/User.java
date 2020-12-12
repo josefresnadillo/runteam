@@ -6,102 +6,111 @@ import java.util.Objects;
 // Aggregate
 
 public class User {
-    private final UserId id;
-    private UserCredentials credentials = UserCredentials.EMPTY;
-    private UserDetails details = UserDetails.builder().build();
-    private UserStatus status = UserStatus.INACTIVE;
-    private UserPrivacy privacy = UserPrivacy.PUBLIC;
-    private UserSubscriptionType subscriptionType = UserSubscriptionType.BASIC;
-    private OffsetDateTime activationDate = OffsetDateTime.now();
-    private Statistics statistics = Statistics.zero();
 
-    public User(final UserId id) {
-        this.id = id;
-    }
+	private final UserId id;
+	private UserCredentials credentials = UserCredentials.EMPTY;
+	private UserDetails details = UserDetails.builder().build();
+	private UserStatus status = UserStatus.INACTIVE;
+	private UserPrivacy privacy = UserPrivacy.PUBLIC;
+	private UserSubscriptionType subscriptionType = UserSubscriptionType.BASIC;
+	private OffsetDateTime activationDate = OffsetDateTime.now();
+	private Statistics statistics = Statistics.zero();
 
-    public UserId getId() {
-        return id;
-    }
+	public User(final UserId id) {
+		this.id = id;
+	}
 
-    public UserCredentials getCredentials() {
-        return credentials;
-    }
+	public UserId getId() {
+		return id;
+	}
 
-    public void setCredentials(UserCredentials credentials) {
-        this.credentials = credentials;
-    }
+	public UserCredentials getCredentials() {
+		return credentials;
+	}
 
-    public UserDetails getDetails() {
-        return details;
-    }
+	public void setCredentials(final UserCredentials credentials) {
+		this.credentials = credentials;
+	}
 
-    public void setDetails(UserDetails details) {
-        this.details = details;
-    }
+	public UserDetails getDetails() {
+		return details;
+	}
 
-    public UserStatus getStatus() {
-        return status;
-    }
+	public void setDetails(final UserDetails details) {
+		this.details = details;
+	}
 
-    public void setStatus(UserStatus status) {
-        this.status = status;
-    }
+	public UserStatus getStatus() {
+		return status;
+	}
 
-    public UserPrivacy getPrivacy() {
-        return privacy;
-    }
+	public void setStatus(final UserStatus status) {
+		this.status = status;
+	}
 
-    public void setPrivacy(UserPrivacy privacy) {
-        this.privacy = privacy;
-    }
+	public UserPrivacy getPrivacy() {
+		return privacy;
+	}
 
-    public UserSubscriptionType getSubscriptionType() {
-        return subscriptionType;
-    }
+	public void setPrivacy(final UserPrivacy privacy) {
+		this.privacy = privacy;
+	}
 
-    public void setSubscriptionType(UserSubscriptionType subscriptionType) {
-        this.subscriptionType = subscriptionType;
-    }
+	public UserSubscriptionType getSubscriptionType() {
+		return subscriptionType;
+	}
 
-    public OffsetDateTime getActivationDate() {
-        return activationDate;
-    }
+	public void setSubscriptionType(final UserSubscriptionType subscriptionType) {
+		this.subscriptionType = subscriptionType;
+	}
 
-    public void setActivationDate(OffsetDateTime activationDate) {
-        this.activationDate = activationDate;
-    }
+	public OffsetDateTime getActivationDate() {
+		return activationDate;
+	}
 
-    public Statistics getStatistics() {
-        return statistics;
-    }
+	public void setActivationDate(final OffsetDateTime activationDate) {
+		this.activationDate = activationDate;
+	}
 
-    public void setStatistics(Statistics statistics) {
-        this.statistics = statistics;
-    }
+	public Statistics getStatistics() {
+		return statistics;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
+	public void setStatistics(final Statistics statistics) {
+		this.statistics = statistics;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+	public void addStatistics(final Statistics statistics) {
+		this.statistics = this.statistics.add(statistics);
+	}
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", credentials=" + credentials +
-                ", details=" + details +
-                ", status=" + status +
-                ", privacy=" + privacy +
-                ", activationDate=" + activationDate +
-                ", statistics=" + statistics +
-                '}';
-    }
+	@Override
+	public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+		User user = (User) o;
+		return Objects.equals(id, user.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public String toString() {
+		return "User{" +
+			"id=" + id +
+			", credentials=" + credentials +
+			", details=" + details +
+			", status=" + status +
+			", privacy=" + privacy +
+			", activationDate=" + activationDate +
+			", statistics=" + statistics +
+			'}';
+	}
 }

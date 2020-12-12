@@ -7,26 +7,27 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class CreateTeam {
-    private static final Logger LOGGER = Logger.getLogger(CreateTeam.class.toString());
 
-    private final TeamRepository teamRepository;
+	private static final Logger LOGGER = Logger.getLogger(CreateTeam.class.toString());
 
-    public CreateTeam(final TeamRepository teamRepository) {
-        this.teamRepository = teamRepository;
-    }
+	private final TeamRepository teamRepository;
 
-    public Team active(final User user,
-                       final TeamDetails details) {
-        final List<Team> teams = teamRepository.findByOwnerId(user.getId());
+	public CreateTeam(final TeamRepository teamRepository) {
+		this.teamRepository = teamRepository;
+	}
 
-        if (teams.size() >= user.getSubscriptionType().getMaxTeams()) {
-            LOGGER.info(DomainExceptionCode.TOO_MUCH_TEAMS + ": " + user);
-            throw new DomainException(DomainExceptionCode.TOO_MUCH_TEAMS);
-        }
+	public Team active(final User user,
+	                   final TeamDetails details) {
+		final List<Team> teams = teamRepository.findByOwnerId(user.getId());
 
-        final Team team = new Team(TeamId.randomTeamId(), user.getId());
-        team.setDetails(details);
-        team.setStatus(TeamStatus.ACTIVE);
-        return team;
-    }
+		if (teams.size() >= user.getSubscriptionType().getMaxTeams()) {
+			LOGGER.info(DomainExceptionCode.TOO_MUCH_TEAMS + ": " + user);
+			throw new DomainException(DomainExceptionCode.TOO_MUCH_TEAMS);
+		}
+
+		final Team team = new Team(TeamId.randomTeamId(), user.getId());
+		team.setDetails(details);
+		team.setStatus(TeamStatus.ACTIVE);
+		return team;
+	}
 }

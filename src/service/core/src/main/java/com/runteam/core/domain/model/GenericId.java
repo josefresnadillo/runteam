@@ -5,17 +5,18 @@ import java.util.UUID;
 // Value Object
 
 public class GenericId {
-    private final String id;
 
-    public GenericId(final String id){
-        this.id = id;
-    }
+	private final String id;
 
-    public String getId() {
-        return id;
-    }
+	public GenericId(final String id) {
+		this.id = id;
+	}
 
-    public static String generate(){
-        return UUID.randomUUID().toString();
-    }
+	public String getId() {
+		return id;
+	}
+
+	public static String generate() {
+		return UUID.randomUUID().toString();
+	}
 }

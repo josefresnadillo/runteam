@@ -1,11 +1,40 @@
 package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
 
 // Value Object
 
 public class ChallengeMember {
+
+    public static final OffsetDateTime MIN_TEAM_MEMBER_VALID_TO = OffsetDateTime.of(1970,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            ZoneOffset.UTC);
+
+    public static final OffsetDateTime MAX_TEAM_MEMBER_VALID_TO = OffsetDateTime.of(2048,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            ZoneOffset.UTC);
+
+    public static final ChallengeMember EMPTY = new ChallengeMember(TeamId.EMPTY,
+            MIN_TEAM_MEMBER_VALID_TO,
+            MIN_TEAM_MEMBER_VALID_TO,
+            Statistics.EMPTY) {
+        public boolean isEmpty() {
+            return true;
+        }
+    };
+
     private final TeamId teamId;
     private final OffsetDateTime activeFrom;
     private final OffsetDateTime activeTo;
@@ -37,8 +66,20 @@ public class ChallengeMember {
         return isActive() ? statistics : new Statistics(0L, 0L, 0L);
     }
 
-    public boolean isActive(){
+    public Statistics addStatistics(final Statistics statistics) {
+        return this.statistics.add(statistics);
+    }
+
+    public boolean isActive() {
         return this.activeTo.isAfter(OffsetDateTime.now());
+    }
+
+    public boolean isInactive() {
+        return this.activeTo.isBefore(OffsetDateTime.now());
+    }
+
+    public boolean isEmpty() {
+        return false;
     }
 
     @Override

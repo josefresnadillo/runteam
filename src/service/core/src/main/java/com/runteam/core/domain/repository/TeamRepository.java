@@ -7,8 +7,12 @@ import com.runteam.core.domain.model.UserId;
 import java.util.List;
 
 public interface TeamRepository {
-    boolean save(final Team team);
-    boolean delete(final Team team);
-    Team findById(final TeamId teamId);
-    List<Team> findByOwnerId(final UserId userId);
+
+	boolean save(final Team team);
+
+	boolean delete(final Team team);
+
+	Team findById(final TeamId teamId);
+
+	List<Team> findByOwnerId(final UserId userId);
 }

@@ -6,8 +6,12 @@ import com.runteam.core.domain.model.UserId;
 import java.util.List;
 
 public interface ChallengeRepository {
-    boolean save(final Challenge challenge);
-    boolean delete(final Challenge challenge);
-    Challenge findById(final ChallengeId challengeId);
-    List<Challenge> findByOwnerId(final UserId userId);
+
+	boolean save(final Challenge challenge);
+
+	boolean delete(final Challenge challenge);
+
+	Challenge findById(final ChallengeId challengeId);
+
+	List<Challenge> findByOwnerId(final UserId userId);
 }
