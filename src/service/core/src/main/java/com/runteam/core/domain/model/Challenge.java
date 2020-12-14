@@ -1,6 +1,7 @@
 package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -9,11 +10,20 @@ import java.util.stream.Collectors;
 
 public class Challenge {
 
+	private static final OffsetDateTime DEFAULT_ACTIVATION_DATE = OffsetDateTime.of(2048,
+	                                                                                1,
+	                                                                                1,
+	                                                                                0,
+	                                                                                0,
+	                                                                                0,
+	                                                                                0,
+	                                                                                ZoneOffset.UTC);
+
 	private final ChallengeId id;
 	private final UserId owner;
 	private ChallengeDetails details = ChallengeDetails.builder().build();
 	private Privacy privacy = Privacy.PUBLIC;
-	private OffsetDateTime activationDate = OffsetDateTime.now();
+	private OffsetDateTime activationDate = DEFAULT_ACTIVATION_DATE;
 	private ChallengeGoal goal = ChallengeGoal.zero();
 	private ChallengeStatus status = ChallengeStatus.INACTIVE;
 	private List<ChallengeMember> members = List.of();

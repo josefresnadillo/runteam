@@ -3,6 +3,7 @@ package com.runteam.core.domain.service;
 import com.runteam.core.domain.model.*;
 import com.runteam.core.domain.repository.TeamRepository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -19,7 +20,6 @@ public class CreateTeam {
 	public Team active(final User user,
 	                   final TeamDetails details) {
 		final List<Team> teams = teamRepository.findByOwnerId(user.getId());
-
 		if (teams.size() >= user.getSubscriptionType().getMaxTeams()) {
 			LOGGER.info(DomainExceptionCode.TOO_MANY_TEAMS + ": " + user);
 			throw new DomainException(DomainExceptionCode.TOO_MANY_TEAMS);
@@ -27,6 +27,7 @@ public class CreateTeam {
 
 		final Team team = new Team(TeamId.randomTeamId(), user.getId());
 		team.setDetails(details);
+		team.setActivationDate(OffsetDateTime.now());
 		team.setStatus(TeamStatus.ACTIVE);
 		return team;
 	}

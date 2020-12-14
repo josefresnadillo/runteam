@@ -1,11 +1,21 @@
 package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
 
 // Aggregate
 
 public class User {
+
+	private static final OffsetDateTime DEFAULT_ACTIVATION_DATE = OffsetDateTime.of(2048,
+	                                                                                1,
+	                                                                                1,
+	                                                                                0,
+	                                                                                0,
+	                                                                                0,
+	                                                                                0,
+	                                                                                ZoneOffset.UTC);
 
 	private final UserId id;
 	private UserCredentials credentials = UserCredentials.EMPTY;
@@ -13,7 +23,7 @@ public class User {
 	private UserStatus status = UserStatus.INACTIVE;
 	private Privacy privacy = Privacy.PUBLIC;
 	private UserSubscriptionType subscriptionType = UserSubscriptionType.BASIC;
-	private OffsetDateTime activationDate = OffsetDateTime.now();
+	private OffsetDateTime activationDate = DEFAULT_ACTIVATION_DATE;
 	private Statistics statistics = Statistics.zero();
 
 	public User(final UserId id) {

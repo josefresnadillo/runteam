@@ -3,6 +3,7 @@ package com.runteam.core.domain.service;
 import com.runteam.core.domain.model.*;
 import com.runteam.core.domain.repository.ChallengeRepository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -20,7 +21,6 @@ public class CreateChallenge {
 	                        final ChallengeDetails details,
 	                        final ChallengeGoal goal) {
 		final List<Challenge> challenges = challengeRepository.findByOwnerId(user.getId());
-
 		if (challenges.size() >= user.getSubscriptionType().getMaxChallenges()) {
 			LOGGER.info(DomainExceptionCode.TOO_MANY_CHALLENGES.getMsg() + ": " + user);
 			throw new DomainException(DomainExceptionCode.TOO_MANY_CHALLENGES);
@@ -29,6 +29,7 @@ public class CreateChallenge {
 		final Challenge challenge = new Challenge(ChallengeId.randomChallengeId(), user.getId());
 		challenge.setDetails(details);
 		challenge.setGoal(goal);
+		challenge.setActivationDate(OffsetDateTime.now());
 		challenge.setStatus(ChallengeStatus.ACTIVE);
 		return challenge;
 	}

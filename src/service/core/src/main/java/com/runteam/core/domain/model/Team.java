@@ -1,6 +1,7 @@
 package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -9,12 +10,20 @@ import java.util.stream.Collectors;
 
 public class Team {
 
+	private static final OffsetDateTime DEFAULT_ACTIVATION_DATE = OffsetDateTime.of(2048,
+	                                                                                1,
+	                                                                                1,
+	                                                                                0,
+	                                                                                0,
+	                                                                                0,
+	                                                                                0,
+	                                                                                ZoneOffset.UTC);
 	private final TeamId id;
 	private final UserId owner;
 	private TeamDetails details = TeamDetails.builder().build();
 	private TeamStatus status = TeamStatus.INACTIVE;
 	private Privacy privacy = Privacy.PUBLIC;
-	private OffsetDateTime activationDate = OffsetDateTime.now();
+	private OffsetDateTime activationDate = DEFAULT_ACTIVATION_DATE;
 	private List<TeamMember> members = List.of();
 	private List<UserId> applicants = List.of();
 
