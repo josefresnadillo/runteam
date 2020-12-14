@@ -6,10 +6,19 @@ public enum UserSubscriptionType {
 	BASIC(3, 3, 30, 3, 30),
 	PREMIUM(10, 10, 100, 10, 100);
 
+	// Max number of teams a user can create
 	private final int maxTeams;
+
+	// Max number of challenges a user can create
 	private final int maxChallenges;
+
+	// Max number of user a team can have
 	private final int maxUserTeams;
+
+	// Max number of challenge a team can be
 	private final int maxTeamChallenges;
+
+	// Max number of teams a challenge can have
 	private final int maxChallengeTeams;
 
 	UserSubscriptionType(final int maxTeams,
