@@ -11,7 +11,7 @@ public class User {
 	private UserCredentials credentials = UserCredentials.EMPTY;
 	private UserDetails details = UserDetails.builder().build();
 	private UserStatus status = UserStatus.INACTIVE;
-	private UserPrivacy privacy = UserPrivacy.PUBLIC;
+	private Privacy privacy = Privacy.PUBLIC;
 	private UserSubscriptionType subscriptionType = UserSubscriptionType.BASIC;
 	private OffsetDateTime activationDate = OffsetDateTime.now();
 	private Statistics statistics = Statistics.zero();
@@ -48,11 +48,11 @@ public class User {
 		this.status = status;
 	}
 
-	public UserPrivacy getPrivacy() {
+	public Privacy getPrivacy() {
 		return privacy;
 	}
 
-	public void setPrivacy(final UserPrivacy privacy) {
+	public void setPrivacy(final Privacy privacy) {
 		this.privacy = privacy;
 	}
 

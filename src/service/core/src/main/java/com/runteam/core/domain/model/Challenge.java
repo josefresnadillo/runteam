@@ -12,6 +12,7 @@ public class Challenge {
 	private final ChallengeId id;
 	private final UserId owner;
 	private ChallengeDetails details = ChallengeDetails.builder().build();
+	private Privacy privacy = Privacy.PUBLIC;
 	private OffsetDateTime activationDate = OffsetDateTime.now();
 	private ChallengeGoal goal = ChallengeGoal.zero();
 	private ChallengeStatus status = ChallengeStatus.INACTIVE;
@@ -38,6 +39,14 @@ public class Challenge {
 
 	public void setDetails(final ChallengeDetails details) {
 		this.details = details;
+	}
+
+	public Privacy getPrivacy() {
+		return privacy;
+	}
+
+	public void setPrivacy(final Privacy privacy) {
+		this.privacy = privacy;
 	}
 
 	public OffsetDateTime getActivationDate() {
@@ -106,12 +115,13 @@ public class Challenge {
 		this.applicants.add(teamId);
 	}
 
-	public void addMember(final TeamId teamId) {
+	public void addMember(final TeamId teamId,
+	                      final OffsetDateTime now) {
 		removeApplicant(teamId);
 		final ChallengeMember challengeMember = findChallengeMemberById(this.members, teamId);
 		if (challengeMember.isEmpty()) {
 			this.members.add(new ChallengeMember(teamId,
-			                                     OffsetDateTime.now(),
+			                                     now,
 			                                     ChallengeMember.MAX_TEAM_MEMBER_VALID_TO,
 			                                     Statistics.zero()));
 			return;
@@ -123,10 +133,11 @@ public class Challenge {
 		}
 	}
 
-	public void removeMember(final TeamId teamId) {
+	public void removeMember(final TeamId teamId,
+	                         final OffsetDateTime now) {
 		final ChallengeMember challengeMember = findChallengeMemberById(this.getActiveMembers(), teamId);
 		addChallengeMember(challengeMember,
-		                   OffsetDateTime.now(),
+		                   now,
 		                   challengeMember.getStatistics());
 	}
 

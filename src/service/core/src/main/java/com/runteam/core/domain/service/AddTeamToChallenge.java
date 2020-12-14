@@ -1,0 +1,57 @@
+package com.runteam.core.domain.service;
+
+import com.runteam.core.domain.model.Challenge;
+import com.runteam.core.domain.model.DomainException;
+import com.runteam.core.domain.model.DomainExceptionCode;
+import com.runteam.core.domain.model.Privacy;
+import com.runteam.core.domain.model.Team;
+import com.runteam.core.domain.model.TeamId;
+import com.runteam.core.domain.model.User;
+import com.runteam.core.domain.repository.ChallengeRepository;
+import com.runteam.core.domain.repository.UserRepository;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.logging.Logger;
+
+public class AddTeamToChallenge {
+
+	private static final Logger LOGGER = Logger.getLogger(AddTeamToChallenge.class.toString());
+
+	private final UserRepository userRepository;
+	private final ChallengeRepository challengeRepository;
+
+	public AddTeamToChallenge(final UserRepository userRepository,
+	                          final ChallengeRepository challengeRepository) {
+		this.userRepository = userRepository;
+		this.challengeRepository = challengeRepository;
+	}
+
+	public Challenge add(final User user,
+	                     final Challenge challenge,
+	                     final Team team) {
+
+		// Challenge is public or private
+		boolean isAllowed = true;
+		if (challenge.getPrivacy() == Privacy.PRIVATE) {
+			final List<Challenge> myChallenges = challengeRepository.findByOwnerId(user.getId());
+			isAllowed = myChallenges.stream().anyMatch(myTeam -> myTeam.getId().equals(challenge.getId()));
+		}
+
+		if (!isAllowed) {
+			LOGGER.info(DomainExceptionCode.CHALLENGE_IS_PRIVATE + ": " + challenge);
+			throw new DomainException(DomainExceptionCode.CHALLENGE_IS_PRIVATE);
+		}
+
+		// Team in too many challenges
+		// Depends on the team owner subscription
+		final User owner = userRepository.findById(team.getOwner());
+		final List<Challenge> teamChallenges = challengeRepository.findByTeamId(team.getId());
+		if (teamChallenges.size() >= owner.getSubscriptionType().getMaxTeamChallenges()){
+			LOGGER.info(DomainExceptionCode.TEAM_IN_TOO_MANY_CHALLENGES + ": " + team);
+			throw new DomainException(DomainExceptionCode.TEAM_IN_TOO_MANY_CHALLENGES);
+		}
+
+		challenge.addMember(team.getId(), OffsetDateTime.now());
+		return challenge;
+	}
+}

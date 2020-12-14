@@ -21,8 +21,8 @@ public class CreateTeam {
 		final List<Team> teams = teamRepository.findByOwnerId(user.getId());
 
 		if (teams.size() >= user.getSubscriptionType().getMaxTeams()) {
-			LOGGER.info(DomainExceptionCode.TOO_MUCH_TEAMS + ": " + user);
-			throw new DomainException(DomainExceptionCode.TOO_MUCH_TEAMS);
+			LOGGER.info(DomainExceptionCode.TOO_MANY_TEAMS + ": " + user);
+			throw new DomainException(DomainExceptionCode.TOO_MANY_TEAMS);
 		}
 
 		final Team team = new Team(TeamId.randomTeamId(), user.getId());

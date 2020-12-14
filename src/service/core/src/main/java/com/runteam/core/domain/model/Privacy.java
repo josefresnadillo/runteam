@@ -2,7 +2,7 @@ package com.runteam.core.domain.model;
 
 // Value Object
 
-public enum UserPrivacy {
+public enum Privacy {
 	PUBLIC,
 	PRIVATE
 }

@@ -2,6 +2,7 @@ package com.runteam.core.domain.repository;
 
 import com.runteam.core.domain.model.Challenge;
 import com.runteam.core.domain.model.ChallengeId;
+import com.runteam.core.domain.model.TeamId;
 import com.runteam.core.domain.model.UserId;
 import java.util.List;
 
@@ -14,4 +15,6 @@ public interface ChallengeRepository {
 	Challenge findById(final ChallengeId challengeId);
 
 	List<Challenge> findByOwnerId(final UserId userId);
+
+	List<Challenge> findByTeamId(final TeamId teamId);
 }

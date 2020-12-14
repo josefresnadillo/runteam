@@ -22,8 +22,8 @@ public class CreateChallenge {
 		final List<Challenge> challenges = challengeRepository.findByOwnerId(user.getId());
 
 		if (challenges.size() >= user.getSubscriptionType().getMaxChallenges()) {
-			LOGGER.info(DomainExceptionCode.TOO_MUCH_CHALLENGES.getMsg() + ": " + user);
-			throw new DomainException(DomainExceptionCode.TOO_MUCH_CHALLENGES);
+			LOGGER.info(DomainExceptionCode.TOO_MANY_CHALLENGES.getMsg() + ": " + user);
+			throw new DomainException(DomainExceptionCode.TOO_MANY_CHALLENGES);
 		}
 
 		final Challenge challenge = new Challenge(ChallengeId.randomChallengeId(), user.getId());

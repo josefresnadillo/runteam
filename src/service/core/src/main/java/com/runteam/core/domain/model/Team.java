@@ -13,6 +13,7 @@ public class Team {
 	private final UserId owner;
 	private TeamDetails details = TeamDetails.builder().build();
 	private TeamStatus status = TeamStatus.INACTIVE;
+	private Privacy privacy = Privacy.PUBLIC;
 	private OffsetDateTime activationDate = OffsetDateTime.now();
 	private List<TeamMember> members = List.of();
 	private List<UserId> applicants = List.of();
@@ -45,6 +46,14 @@ public class Team {
 
 	public void setStatus(final TeamStatus status) {
 		this.status = status;
+	}
+
+	public Privacy getPrivacy() {
+		return privacy;
+	}
+
+	public void setPrivacy(final Privacy privacy) {
+		this.privacy = privacy;
 	}
 
 	public OffsetDateTime getActivationDate() {
@@ -97,12 +106,13 @@ public class Team {
 		this.applicants.add(userId);
 	}
 
-	public void addMember(final UserId userId) {
+	public void addMember(final UserId userId,
+	                      final OffsetDateTime now) {
 		removeApplicant(userId);
 		final TeamMember teamMember = findTeamMemberById(this.members, userId);
 		if (teamMember.isEmpty()) {
 			this.members.add(new TeamMember(userId,
-			                                OffsetDateTime.now(),
+			                                now,
 			                                TeamMember.MAX_TEAM_MEMBER_VALID_TO,
 			                                Statistics.zero()));
 			return;
@@ -114,10 +124,11 @@ public class Team {
 		}
 	}
 
-	public void removeMember(final UserId userId) {
+	public void removeMember(final UserId userId,
+	                         final OffsetDateTime now) {
 		final TeamMember member = findTeamMemberById(this.getActiveMembers(), userId);
 		addTeamMember(member,
-		              OffsetDateTime.now(), // set to inactive from now on
+		              now, // set to inactive from now on
 		              member.getStatistics());
 	}
 
@@ -129,7 +140,7 @@ public class Team {
 		              member.addStatistics(statistics));
 	}
 
-	public void addTeamMember(final TeamMember teamMember,
+	private void addTeamMember(final TeamMember teamMember,
 	                          final OffsetDateTime activeTo,
 	                          final Statistics statistics) {
 		if (!teamMember.isEmpty()) {
