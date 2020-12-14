@@ -37,6 +37,14 @@ public class AddTeamToChallenge {
 			throw new DomainException(DomainExceptionCode.CHALLENGE_IS_PRIVATE);
 		}
 
+		// Check if the challenge has too many teams
+		// Depends on the challenge owner subscription
+		final User challengeOwner = userRepository.findById(challenge.getOwner());
+		if (challenge.getActiveMembers().size() >= challengeOwner.getSubscriptionType().getMaxChallengeTeams()){
+			LOGGER.info(DomainExceptionCode.CHALLENGE_HAS_TOO_MANY_TEAMS + ": " + challenge);
+			throw new DomainException(DomainExceptionCode.CHALLENGE_HAS_TOO_MANY_TEAMS);
+		}
+
 		// Check if team is in too many challenges
 		// Depends on the team owner subscription
 		final User owner = userRepository.findById(team.getOwner());
