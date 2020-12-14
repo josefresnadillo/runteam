@@ -3,8 +3,8 @@ package com.runteam.core.domain.model;
 // Value Object
 
 public enum UserSubscriptionType {
-	BASIC(3, 3, 50, 3),
-	PREMIUM(100, 100, 100, 3);
+	BASIC(3, 3, 30, 3),
+	PREMIUM(10, 10, 100, 10);
 
 	private final int maxTeams;
 	private final int maxChallenges;

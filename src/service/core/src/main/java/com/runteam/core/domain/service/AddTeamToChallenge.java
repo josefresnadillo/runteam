@@ -5,8 +5,8 @@ import com.runteam.core.domain.model.DomainException;
 import com.runteam.core.domain.model.DomainExceptionCode;
 import com.runteam.core.domain.model.Privacy;
 import com.runteam.core.domain.model.Team;
-import com.runteam.core.domain.model.TeamId;
 import com.runteam.core.domain.model.User;
+import com.runteam.core.domain.model.UserId;
 import com.runteam.core.domain.repository.ChallengeRepository;
 import com.runteam.core.domain.repository.UserRepository;
 import java.time.OffsetDateTime;
@@ -26,23 +26,18 @@ public class AddTeamToChallenge {
 		this.challengeRepository = challengeRepository;
 	}
 
-	public Challenge add(final User user,
+	public Challenge add(final UserId userId,
 	                     final Challenge challenge,
 	                     final Team team) {
 
-		// Challenge is public or private
-		boolean isAllowed = true;
-		if (challenge.getPrivacy() == Privacy.PRIVATE) {
-			final List<Challenge> myChallenges = challengeRepository.findByOwnerId(user.getId());
-			isAllowed = myChallenges.stream().anyMatch(myTeam -> myTeam.getId().equals(challenge.getId()));
-		}
-
-		if (!isAllowed) {
+		// If challenge is private, only the owner can add a new team
+		final boolean isChallengeOwner = challenge.getOwner().equals(userId);
+		if ((challenge.getPrivacy() == Privacy.PRIVATE) && (!isChallengeOwner)) {
 			LOGGER.info(DomainExceptionCode.CHALLENGE_IS_PRIVATE + ": " + challenge);
 			throw new DomainException(DomainExceptionCode.CHALLENGE_IS_PRIVATE);
 		}
 
-		// Team in too many challenges
+		// Check if team is in too many challenges
 		// Depends on the team owner subscription
 		final User owner = userRepository.findById(team.getOwner());
 		final List<Challenge> teamChallenges = challengeRepository.findByTeamId(team.getId());
