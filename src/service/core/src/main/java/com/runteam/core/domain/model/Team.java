@@ -141,8 +141,8 @@ public class Team {
 	}
 
 	private void addTeamMember(final TeamMember teamMember,
-	                          final OffsetDateTime activeTo,
-	                          final Statistics statistics) {
+	                           final OffsetDateTime activeTo,
+	                           final Statistics statistics) {
 		if (!teamMember.isEmpty()) {
 			this.members.remove(teamMember);
 			this.members.add(new TeamMember(teamMember.getUserId(),
