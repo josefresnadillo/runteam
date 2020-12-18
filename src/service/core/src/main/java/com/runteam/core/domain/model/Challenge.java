@@ -109,12 +109,6 @@ public class Challenge {
 		                   .collect(Collectors.toList());
 	}
 
-	public List<ChallengeMember> getInactiveMembers() {
-		return this.members.stream()
-		                   .filter(t -> !t.isActive())
-		                   .collect(Collectors.toList());
-	}
-
 	public void addApplicant(final TeamId teamId) {
 		if (!this.applicants.contains(teamId)) {
 			this.applicants.add(teamId);
@@ -137,31 +131,31 @@ public class Challenge {
 			return;
 		}
 		if (challengeMember.isInactive()) {
-			addChallengeMember(challengeMember,
-			                   ChallengeMember.MAX_TEAM_MEMBER_VALID_TO, // to activate again
-			                   challengeMember.getStatistics());
+			updateChallengeMember(challengeMember,
+			                      ChallengeMember.MAX_TEAM_MEMBER_VALID_TO, // to activate again
+			                      challengeMember.getStatistics());
 		}
 	}
 
 	public void removeMember(final TeamId teamId,
 	                         final OffsetDateTime now) {
 		final ChallengeMember challengeMember = findChallengeMemberById(this.getActiveMembers(), teamId);
-		addChallengeMember(challengeMember,
-		                   now,
-		                   challengeMember.getStatistics());
+		updateChallengeMember(challengeMember,
+		                      now,
+		                      challengeMember.getStatistics());
 	}
 
 	public void addStatistics(final TeamId teamId,
 	                          final Statistics statistics) {
 		final ChallengeMember member = findChallengeMemberById(this.getActiveMembers(), teamId);
-		addChallengeMember(member,
-		                   member.getActiveTo(),
-		                   member.addStatistics(statistics));
+		updateChallengeMember(member,
+		                      member.getActiveTo(),
+		                      member.addStatistics(statistics));
 	}
 
-	private void addChallengeMember(final ChallengeMember challengeMember,
-	                                final OffsetDateTime activeTo,
-	                                final Statistics statistics) {
+	private void updateChallengeMember(final ChallengeMember challengeMember,
+	                                   final OffsetDateTime activeTo,
+	                                   final Statistics statistics) {
 		if (!challengeMember.isEmpty()) {
 			this.members.remove(challengeMember);
 			this.members.add(new ChallengeMember(challengeMember.getTeamId(),

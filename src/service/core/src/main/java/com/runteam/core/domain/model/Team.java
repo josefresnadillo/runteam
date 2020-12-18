@@ -99,12 +99,6 @@ public class Team {
 		                   .collect(Collectors.toList());
 	}
 
-	public List<TeamMember> getInactiveMembers() {
-		return this.members.stream()
-		                   .filter(m -> !m.isActive())
-		                   .collect(Collectors.toList());
-	}
-
 	public void addApplicant(final UserId userId) {
 		if (!this.applicants.contains(userId)) {
 			this.applicants.add(userId);
@@ -127,31 +121,31 @@ public class Team {
 			return;
 		}
 		if (teamMember.isInactive()) {
-			addTeamMember(teamMember,
-			              TeamMember.MAX_TEAM_MEMBER_VALID_TO,
-			              teamMember.getStatistics());
+			updateTeamMember(teamMember,
+			                 TeamMember.MAX_TEAM_MEMBER_VALID_TO,
+			                 teamMember.getStatistics());
 		}
 	}
 
 	public void removeMember(final UserId userId,
 	                         final OffsetDateTime now) {
 		final TeamMember member = findTeamMemberById(this.getActiveMembers(), userId);
-		addTeamMember(member,
-		              now, // set to inactive from now on
-		              member.getStatistics());
+		updateTeamMember(member,
+		                 now, // set to inactive from now on
+		                 member.getStatistics());
 	}
 
 	public void addStatistics(final UserId userId,
 	                          final Statistics statistics) {
 		final TeamMember member = findTeamMemberById(this.getActiveMembers(), userId);
-		addTeamMember(member,
-		              member.getActiveTo(),
-		              member.addStatistics(statistics));
+		updateTeamMember(member,
+		                 member.getActiveTo(),
+		                 member.addStatistics(statistics));
 	}
 
-	private void addTeamMember(final TeamMember teamMember,
-	                           final OffsetDateTime activeTo,
-	                           final Statistics statistics) {
+	private void updateTeamMember(final TeamMember teamMember,
+	                              final OffsetDateTime activeTo,
+	                              final Statistics statistics) {
 		if (!teamMember.isEmpty()) {
 			this.members.remove(teamMember);
 			this.members.add(new TeamMember(teamMember.getUserId(),
