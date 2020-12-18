@@ -8,7 +8,7 @@ public class UserCredentials {
 
 	public static final UserCredentials EMPTY = new UserCredentials("", "");
 
-	private final String username; // Example @josefresna
+	private final String username; // Example josefresna
 	private final String secret;
 
 	public UserCredentials(final String username,

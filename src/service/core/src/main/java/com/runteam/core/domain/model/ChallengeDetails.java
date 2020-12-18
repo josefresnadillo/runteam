@@ -2,8 +2,6 @@ package com.runteam.core.domain.model;
 
 import static com.runteam.core.domain.model.DomainExceptionCode.URL_NOT_VALID;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.validator.routines.UrlValidator;
@@ -45,12 +43,12 @@ public class ChallengeDetails {
 
 	@Override
 	public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 		ChallengeDetails that = (ChallengeDetails) o;
 		return Objects.equals(name, that.name) &&
 			Objects.equals(displayName, that.displayName) &&

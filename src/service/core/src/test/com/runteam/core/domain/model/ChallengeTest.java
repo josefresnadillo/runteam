@@ -15,17 +15,17 @@ public class ChallengeTest {
 		final ChallengeDetails challengeDetails = ChallengeDetails.builder()
 		                                                          .name("team1")
 		                                                          .displayName("Best Team")
-		                                                          .imageUrl("https://imageurl")
+		                                                          .imageUrl("http://google.es")
 		                                                          .tags(List.of("tag1", "tag2"))
 		                                                          .build();
 		final Challenge challenge = new Challenge(new ChallengeId("challengeId"), new UserId("ownerId"));
 		challenge.setDetails(challengeDetails);
-		challenge.setStatus(ChallengeStatus.ACTIVE);
+		challenge.setStatus(ChallengeStatus.SUSPENDED);
 		challenge.setPrivacy(Privacy.PUBLIC);
 		challenge.setActivationDate(OffsetDateTime.MAX);
 		challenge.setGoal(ChallengeGoal.zero());
 		assertEquals(challenge.getDetails(), challengeDetails);
-		assertEquals(challenge.getStatus(), ChallengeStatus.ACTIVE);
+		assertEquals(challenge.getStatus(), ChallengeStatus.SUSPENDED);
 		assertEquals(challenge.getPrivacy(), Privacy.PUBLIC);
 		assertEquals(challenge.getActivationDate(), OffsetDateTime.MAX);
 		assertEquals(challenge.getGoal(), ChallengeGoal.zero());
