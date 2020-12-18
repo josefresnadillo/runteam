@@ -2,9 +2,17 @@ package com.runteam.core.domain.model;
 
 // Value Object
 
+import static com.runteam.core.domain.model.DomainExceptionCode.COUNTRY_NOT_VALID;
+import static com.runteam.core.domain.model.DomainExceptionCode.URL_NOT_VALID;
+
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import org.apache.commons.validator.routines.UrlValidator;
 
 public class TeamDetails {
+
+	private static final List<String> COUNTRIES = List.of(Locale.getISOCountries());
 
 	private final String name; // example "@team1"
 	private final String displayName; // example "The Best Team"
@@ -46,12 +54,12 @@ public class TeamDetails {
 
 	@Override
 	public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 		TeamDetails that = (TeamDetails) o;
 		return Objects.equals(name, that.name) &&
 			Objects.equals(displayName, that.displayName) &&
@@ -102,6 +110,9 @@ public class TeamDetails {
 		}
 
 		public Builder imageUrl(final String value) {
+			if (!UrlValidator.getInstance().isValid(value)) {
+				throw new DomainException(URL_NOT_VALID);
+			}
 			this.imageUrl = value;
 			return this;
 		}
@@ -112,6 +123,9 @@ public class TeamDetails {
 		}
 
 		public Builder countryCode(final String value) {
+			if (COUNTRIES.stream().noneMatch(c -> c.equalsIgnoreCase(value))) {
+				throw new DomainException(COUNTRY_NOT_VALID);
+			}
 			this.countryCode = value;
 			return this;
 		}

@@ -8,19 +8,25 @@ import java.util.Objects;
 
 public class ChallengeGoal {
 
-	public static final OffsetDateTime MIN_GOAL_VALID_TO = OffsetDateTime.of(1970,
-	                                                                         1,
-	                                                                         1,
-	                                                                         0,
-	                                                                         0,
-	                                                                         0,
-	                                                                         0,
-	                                                                         ZoneOffset.UTC);
+	public static final OffsetDateTime DEFAULT_VALID_FROM = OffsetDateTime.of(1970,
+	                                                                          1,
+	                                                                          1,
+	                                                                          0,
+	                                                                          0,
+	                                                                          0,
+	                                                                          0,
+	                                                                          ZoneOffset.UTC);
 
-	public static final ChallengeGoal EMPTY = new ChallengeGoal(0L,
-	                                                            0L,
-	                                                            MIN_GOAL_VALID_TO,
-	                                                            MIN_GOAL_VALID_TO);
+	public static final OffsetDateTime DEFAULT_VALID_TO = OffsetDateTime.of(2048,
+	                                                                        1,
+	                                                                        1,
+	                                                                        0,
+	                                                                        0,
+	                                                                        0,
+	                                                                        0,
+	                                                                        ZoneOffset.UTC);
+
+	public static final ChallengeGoal EMPTY = ChallengeGoal.zero();
 
 	private final Long meters;
 	private final Long elevationInMeters;
@@ -56,8 +62,8 @@ public class ChallengeGoal {
 	public static ChallengeGoal zero() {
 		return new ChallengeGoal(0L,
 		                         0L,
-		                         MIN_GOAL_VALID_TO,
-		                         MIN_GOAL_VALID_TO);
+		                         DEFAULT_VALID_FROM,
+		                         DEFAULT_VALID_TO);
 	}
 
 	@Override

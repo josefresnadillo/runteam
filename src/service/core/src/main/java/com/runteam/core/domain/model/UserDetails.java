@@ -1,11 +1,23 @@
 package com.runteam.core.domain.model;
 
+import static com.runteam.core.domain.model.DomainExceptionCode.COUNTRY_NOT_VALID;
+import static com.runteam.core.domain.model.DomainExceptionCode.EMAIL_NOT_VALID;
+import static com.runteam.core.domain.model.DomainExceptionCode.LANGUAGE_NOT_VALID;
+import static com.runteam.core.domain.model.DomainExceptionCode.URL_NOT_VALID;
+
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import org.apache.commons.validator.routines.EmailValidator;
+import org.apache.commons.validator.routines.UrlValidator;
 
 // Value Object
 
 public class UserDetails {
+
+	private static final List<String> COUNTRIES = List.of(Locale.getISOCountries());
+	private static final List<String> LANGUAGES = List.of(Locale.getISOLanguages());
 
 	private final String displayName; // Example Jose Fresnadillo
 	private final String email;
@@ -68,12 +80,12 @@ public class UserDetails {
 
 	@Override
 	public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 		UserDetails that = (UserDetails) o;
 		return Objects.equals(displayName, that.displayName) &&
 			Objects.equals(email, that.email) &&
@@ -114,12 +126,18 @@ public class UserDetails {
 		}
 
 		public Builder email(final String value) {
-			this.email = email;
+			if (!EmailValidator.getInstance().isValid(value)) {
+				throw new DomainException(EMAIL_NOT_VALID);
+			}
+			this.email = value;
 			return this;
 		}
 
 		public Builder imageUrl(final String value) {
-			this.imageUrl = imageUrl;
+			if (!UrlValidator.getInstance().isValid(value)) {
+				throw new DomainException(URL_NOT_VALID);
+			}
+			this.imageUrl = value;
 			return this;
 		}
 
@@ -139,11 +157,17 @@ public class UserDetails {
 		}
 
 		public Builder countryCode(final String value) {
+			if (COUNTRIES.stream().noneMatch(c -> c.equalsIgnoreCase(value))) {
+				throw new DomainException(COUNTRY_NOT_VALID);
+			}
 			this.countryCode = value;
 			return this;
 		}
 
 		public Builder language(final String value) {
+			if (LANGUAGES.stream().noneMatch(c -> c.equalsIgnoreCase(value))) {
+				throw new DomainException(LANGUAGE_NOT_VALID);
+			}
 			this.language = value;
 			return this;
 		}

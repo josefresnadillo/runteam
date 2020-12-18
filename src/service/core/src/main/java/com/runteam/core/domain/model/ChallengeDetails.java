@@ -1,7 +1,12 @@
 package com.runteam.core.domain.model;
 
+import static com.runteam.core.domain.model.DomainExceptionCode.URL_NOT_VALID;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.validator.routines.UrlValidator;
 
 // Value Object
 
@@ -93,6 +98,9 @@ public class ChallengeDetails {
 		}
 
 		public Builder imageUrl(final String value) {
+			if (!UrlValidator.getInstance().isValid(value)) {
+				throw new DomainException(URL_NOT_VALID);
+			}
 			this.imageUrl = value;
 			return this;
 		}

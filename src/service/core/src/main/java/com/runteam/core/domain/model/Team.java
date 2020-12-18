@@ -2,6 +2,7 @@ package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -24,8 +25,8 @@ public class Team {
 	private TeamStatus status = TeamStatus.INACTIVE;
 	private Privacy privacy = Privacy.PUBLIC;
 	private OffsetDateTime activationDate = DEFAULT_ACTIVATION_DATE;
-	private List<TeamMember> members = List.of();
-	private List<UserId> applicants = List.of();
+	private final List<TeamMember> members = new ArrayList<>();
+	private final List<UserId> applicants = new ArrayList<>();
 
 	public Team(final TeamId id,
 	            final UserId owner) {
@@ -73,20 +74,8 @@ public class Team {
 		this.activationDate = activationDate;
 	}
 
-	public List<TeamMember> getMembers() {
-		return members;
-	}
-
-	public void setMembers(final List<TeamMember> members) {
-		this.members = members;
-	}
-
 	public List<UserId> getApplicants() {
 		return applicants;
-	}
-
-	public void setApplicants(final List<UserId> applicants) {
-		this.applicants = applicants.stream().distinct().collect(Collectors.toList());
 	}
 
 	public Statistics statistics() {
@@ -99,6 +88,12 @@ public class Team {
 		                   .collect(Collectors.toList());
 	}
 
+	public List<TeamMember> getInactiveMembers() {
+		return this.members.stream()
+		                   .filter(TeamMember::isInactive)
+		                   .collect(Collectors.toList());
+	}
+
 	public void addApplicant(final UserId userId) {
 		if (!this.applicants.contains(userId)) {
 			this.applicants.add(userId);
@@ -106,7 +101,7 @@ public class Team {
 	}
 
 	public void removeApplicant(final UserId userId) {
-		this.applicants.add(userId);
+		this.applicants.remove(userId);
 	}
 
 	public void addMember(final UserId userId,

@@ -5,7 +5,7 @@ public class DomainException extends RuntimeException {
 	private final DomainExceptionCode code;
 
 	public DomainException(final DomainExceptionCode code) {
-		super(code.getMsg());
+		super(code.getMessage());
 		this.code = code;
 	}
 
