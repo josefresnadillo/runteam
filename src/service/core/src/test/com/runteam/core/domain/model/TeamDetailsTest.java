@@ -36,9 +36,10 @@ public class TeamDetailsTest {
 	@Test
 	@DisplayName("Test set country wrong")
 	public void setCountryCodeWrongTest() {
-		assertThrows(DomainException.class, () -> TeamDetails.builder()
+		DomainException exception = assertThrows(DomainException.class, () -> TeamDetails.builder()
 		                                                     .countryCode("wrong")
 		                                                     .build());
+		assertEquals(exception.getCode(), DomainExceptionCode.COUNTRY_NOT_VALID);
 	}
 
 	@Test
@@ -53,8 +54,9 @@ public class TeamDetailsTest {
 	@Test
 	@DisplayName("Test set url wrong")
 	public void setImageUrlWroingTest() {
-		assertThrows(DomainException.class, () -> TeamDetails.builder()
+		DomainException exception = assertThrows(DomainException.class, () -> TeamDetails.builder()
 		                                                     .imageUrl("wrong")
 		                                                     .build());
+		assertEquals(exception.getCode(), DomainExceptionCode.URL_NOT_VALID);
 	}
 }

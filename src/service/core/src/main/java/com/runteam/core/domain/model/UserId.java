@@ -14,7 +14,7 @@ public class UserId extends GenericId {
 		super(id);
 	}
 
-	public static UserId randomUserId() {
+	public static UserId randomId() {
 		return new UserId(generate());
 	}
 

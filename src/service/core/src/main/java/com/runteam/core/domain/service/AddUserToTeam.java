@@ -25,7 +25,7 @@ public class AddUserToTeam {
 	                final UserId newUserToTeam) {
 
 		// If team is private, only the owner can add a new user
-		final boolean isTeamOwner = team.getOwner().equals(userId);
+		final boolean isTeamOwner = team.getOwnerId().equals(userId);
 		if ((team.getPrivacy() == Privacy.PRIVATE) && (!isTeamOwner)){
 			LOGGER.info(DomainExceptionCode.TEAM_IS_PRIVATE + ": " + team);
 			throw new DomainException(DomainExceptionCode.TEAM_IS_PRIVATE);
@@ -33,8 +33,8 @@ public class AddUserToTeam {
 
 		// Check if team has too many users
 		// Depends on the team owner subscription
-		final User owner = userRepository.findById(team.getOwner());
-		if (team.getActiveMembers().size() >= owner.getSubscriptionType().getMaxUserTeams()){
+		final User owner = userRepository.findById(team.getOwnerId());
+		if (team.getActiveMembers().size() >= owner.getSubscriptionType().getMaxTeamsUserBelongs()){
 			LOGGER.info(DomainExceptionCode.TOO_MANY_USERS_IN_TEAMS + ": " + team);
 			throw new DomainException(DomainExceptionCode.TOO_MANY_USERS_IN_TEAMS);
 		}

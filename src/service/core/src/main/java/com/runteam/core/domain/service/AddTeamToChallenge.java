@@ -30,8 +30,14 @@ public class AddTeamToChallenge {
 	                     final Challenge challenge,
 	                     final Team team) {
 
-		// If challenge is private, only the owner can add a new team
-		final boolean isChallengeOwner = challenge.getOwner().equals(userId);
+		// Team owner is the only who can add a team to a challenge
+		if (!team.getOwnerId().equals(userId)){
+			LOGGER.info(DomainExceptionCode.ONLY_OWNER_CAN_ADD_TEAM_TO_CHALLENGE + ": " + team);
+			throw new DomainException(DomainExceptionCode.ONLY_OWNER_CAN_ADD_TEAM_TO_CHALLENGE);
+		}
+
+		// If challenge is private, only the owner of the challenge can add a new team
+		final boolean isChallengeOwner = challenge.getOwnerId().equals(userId);
 		if ((challenge.getPrivacy() == Privacy.PRIVATE) && (!isChallengeOwner)) {
 			LOGGER.info(DomainExceptionCode.CHALLENGE_IS_PRIVATE + ": " + challenge);
 			throw new DomainException(DomainExceptionCode.CHALLENGE_IS_PRIVATE);
@@ -39,7 +45,7 @@ public class AddTeamToChallenge {
 
 		// Check if the challenge has too many teams
 		// Depends on the challenge owner subscription
-		final User challengeOwner = userRepository.findById(challenge.getOwner());
+		final User challengeOwner = userRepository.findById(challenge.getOwnerId());
 		if (challenge.getActiveMembers().size() >= challengeOwner.getSubscriptionType().getMaxChallengeTeams()){
 			LOGGER.info(DomainExceptionCode.CHALLENGE_HAS_TOO_MANY_TEAMS + ": " + challenge);
 			throw new DomainException(DomainExceptionCode.CHALLENGE_HAS_TOO_MANY_TEAMS);
@@ -47,9 +53,9 @@ public class AddTeamToChallenge {
 
 		// Check if team is in too many challenges
 		// Depends on the team owner subscription
-		final User owner = userRepository.findById(team.getOwner());
+		final User teamOwner = userRepository.findById(team.getOwnerId());
 		final List<Challenge> teamChallenges = challengeRepository.findByTeamId(team.getId());
-		if (teamChallenges.size() >= owner.getSubscriptionType().getMaxTeamChallenges()){
+		if (teamChallenges.size() >= teamOwner.getSubscriptionType().getMaxChallengesTeamBelongs()){
 			LOGGER.info(DomainExceptionCode.TEAM_IN_TOO_MANY_CHALLENGES + ": " + team);
 			throw new DomainException(DomainExceptionCode.TEAM_IN_TOO_MANY_CHALLENGES);
 		}

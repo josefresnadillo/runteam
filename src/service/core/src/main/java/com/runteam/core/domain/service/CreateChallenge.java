@@ -26,7 +26,7 @@ public class CreateChallenge {
 			throw new DomainException(DomainExceptionCode.TOO_MANY_CHALLENGES);
 		}
 
-		final Challenge challenge = new Challenge(ChallengeId.randomChallengeId(), user.getId());
+		final Challenge challenge = new Challenge(ChallengeId.randomId(), user.getId());
 		challenge.setDetails(details);
 		challenge.setGoal(goal);
 		challenge.setActivationDate(OffsetDateTime.now());

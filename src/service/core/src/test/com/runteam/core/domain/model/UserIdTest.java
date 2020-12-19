@@ -10,7 +10,7 @@ public class UserIdTest {
 	@Test
 	@DisplayName("Test generate id")
 	public void generateId() {
-		final UserId id = UserId.randomUserId();
+		final UserId id = UserId.randomId();
 		assertFalse(id.isEmpty());
 	}
 }

@@ -38,7 +38,7 @@ public class Team {
 		return id;
 	}
 
-	public UserId getOwner() {
+	public UserId getOwnerId() {
 		return owner;
 	}
 

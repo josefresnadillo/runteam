@@ -40,7 +40,7 @@ public class Challenge {
 		return id;
 	}
 
-	public UserId getOwner() {
+	public UserId getOwnerId() {
 		return owner;
 	}
 

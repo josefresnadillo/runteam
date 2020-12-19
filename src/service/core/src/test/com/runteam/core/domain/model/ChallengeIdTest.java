@@ -10,7 +10,7 @@ public class ChallengeIdTest {
 	@Test
 	@DisplayName("Test generate id")
 	public void generateId() {
-		final ChallengeId id = ChallengeId.randomChallengeId();
+		final ChallengeId id = ChallengeId.randomId();
 		assertFalse(id.isEmpty());
 	}
 }

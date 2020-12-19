@@ -13,23 +13,23 @@ public enum UserSubscriptionType {
 	private final int maxChallenges;
 
 	// Max number of user a team can have
-	private final int maxUserTeams;
+	private final int maxTeamsUserBelongs;
 
-	// Max number of challenge a team can be
-	private final int maxTeamChallenges;
+	// Max number of challenge a team can belong to
+	private final int maxChallengesTeamBelongs;
 
 	// Max number of teams a challenge can have
 	private final int maxChallengeTeams;
 
 	UserSubscriptionType(final int maxTeams,
 	                     final int maxChallenges,
-	                     final int maxUserTeams,
-	                     final int maxTeamChallenges,
+	                     final int maxTeamsUserBelongs,
+	                     final int maxChallengesTeamBelongs,
 	                     final int maxChallengeTeams) {
 		this.maxTeams = maxTeams;
 		this.maxChallenges = maxChallenges;
-		this.maxUserTeams = maxUserTeams;
-		this.maxTeamChallenges = maxTeamChallenges;
+		this.maxTeamsUserBelongs = maxTeamsUserBelongs;
+		this.maxChallengesTeamBelongs = maxChallengesTeamBelongs;
 		this.maxChallengeTeams = maxChallengeTeams;
 	}
 
@@ -41,12 +41,12 @@ public enum UserSubscriptionType {
 		return maxChallenges;
 	}
 
-	public int getMaxUserTeams() {
-		return maxUserTeams;
+	public int getMaxTeamsUserBelongs() {
+		return maxTeamsUserBelongs;
 	}
 
-	public int getMaxTeamChallenges() {
-		return maxTeamChallenges;
+	public int getMaxChallengesTeamBelongs() {
+		return maxChallengesTeamBelongs;
 	}
 
 	public int getMaxChallengeTeams() {

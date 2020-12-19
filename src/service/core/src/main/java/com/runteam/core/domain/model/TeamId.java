@@ -14,7 +14,7 @@ public class TeamId extends GenericId {
 		super(id);
 	}
 
-	public static TeamId randomTeamId() {
+	public static TeamId randomId() {
 		return new TeamId(generate());
 	}
 

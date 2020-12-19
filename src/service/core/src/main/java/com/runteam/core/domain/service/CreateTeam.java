@@ -25,7 +25,7 @@ public class CreateTeam {
 			throw new DomainException(DomainExceptionCode.TOO_MANY_TEAMS);
 		}
 
-		final Team team = new Team(TeamId.randomTeamId(), user.getId());
+		final Team team = new Team(TeamId.randomId(), user.getId());
 		team.setDetails(details);
 		team.setActivationDate(OffsetDateTime.now());
 		team.setStatus(TeamStatus.ACTIVE);

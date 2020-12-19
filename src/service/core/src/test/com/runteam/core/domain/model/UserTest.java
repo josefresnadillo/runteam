@@ -32,7 +32,6 @@ public class UserTest {
 		assertEquals(user.getSubscriptionType(), UserSubscriptionType.PREMIUM);
 	}
 
-
 	@Test
 	@DisplayName("Test team add statistics")
 	public void AddStatisticsTest() {

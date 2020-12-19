@@ -14,7 +14,7 @@ public class ChallengeId extends GenericId {
 		super(id);
 	}
 
-	public static ChallengeId randomChallengeId() {
+	public static ChallengeId randomId() {
 		return new ChallengeId(generate());
 	}
 

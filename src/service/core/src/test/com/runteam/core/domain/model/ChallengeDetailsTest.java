@@ -37,8 +37,9 @@ public class ChallengeDetailsTest {
 	@Test
 	@DisplayName("Test set url wrong")
 	public void setImageUrlWroingTest() {
-		assertThrows(DomainException.class, () -> ChallengeDetails.builder()
-		                                                          .imageUrl("wrong")
-		                                                          .build());
+		DomainException exception = assertThrows(DomainException.class, () -> ChallengeDetails.builder()
+		                                                                                      .imageUrl("wrong")
+		                                                                                      .build());
+		assertEquals(exception.getCode(), DomainExceptionCode.URL_NOT_VALID);
 	}
 }

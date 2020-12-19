@@ -55,9 +55,10 @@ public class UserDetailsTest {
 	@Test
 	@DisplayName("Test set email wrong")
 	public void emailWrongTest() {
-		assertThrows(DomainException.class, () -> UserDetails.builder()
-		                                                     .email("wrong")
-		                                                     .build());
+		DomainException exception = assertThrows(DomainException.class, () -> UserDetails.builder()
+		                                                                                 .email("wrong")
+		                                                                                 .build());
+		assertEquals(exception.getCode(), DomainExceptionCode.EMAIL_NOT_VALID);
 	}
 
 	@Test
@@ -72,9 +73,10 @@ public class UserDetailsTest {
 	@Test
 	@DisplayName("Test set image url wrong")
 	public void imageUrlWrongTest() {
-		assertThrows(DomainException.class, () -> UserDetails.builder()
-		                                                     .imageUrl("wrong")
-		                                                     .build());
+		DomainException exception = assertThrows(DomainException.class, () -> UserDetails.builder()
+		                                                                                 .imageUrl("wrong")
+		                                                                                 .build());
+		assertEquals(exception.getCode(), DomainExceptionCode.URL_NOT_VALID);
 	}
 
 	@Test
@@ -89,8 +91,9 @@ public class UserDetailsTest {
 	@Test
 	@DisplayName("Test set language wrong")
 	public void languageWrongTest() {
-		assertThrows(DomainException.class, () -> UserDetails.builder()
-		                                                     .language("wrong")
-		                                                     .build());
+		DomainException exception = assertThrows(DomainException.class, () -> UserDetails.builder()
+		                                                                                 .language("wrong")
+		                                                                                 .build());
+		assertEquals(exception.getCode(), DomainExceptionCode.LANGUAGE_NOT_VALID);
 	}
 }
