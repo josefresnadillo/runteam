@@ -17,49 +17,40 @@ public class TeamMember {
 	                                                                                0,
 	                                                                                ZoneOffset.UTC);
 
-	public static final OffsetDateTime MAX_TEAM_MEMBER_VALID_TO = OffsetDateTime.of(2048,
-	                                                                                1,
-	                                                                                1,
-	                                                                                0,
-	                                                                                0,
-	                                                                                0,
-	                                                                                0,
-	                                                                                ZoneOffset.UTC);
-
 	public static final TeamMember EMPTY = new TeamMember(UserId.EMPTY,
 	                                                      MIN_TEAM_MEMBER_VALID_TO,
-	                                                      MIN_TEAM_MEMBER_VALID_TO,
+	                                                      Status.INACTIVE,
 	                                                      Statistics.EMPTY) {
 		public boolean isEmpty() {
 			return true;
 		}
 	};
 
-	private final UserId userId;
+	private final UserId id;
 	private final OffsetDateTime activeFrom;
-	private final OffsetDateTime activeTo;
+	private final Status status;
 	private final Statistics statistics;
 
-	public TeamMember(final UserId userId,
+	public TeamMember(final UserId id,
 	                  final OffsetDateTime activeFrom,
-	                  final OffsetDateTime activeTo,
+	                  final Status status,
 	                  final Statistics statistics) {
-		this.userId = userId;
+		this.id = id;
 		this.activeFrom = activeFrom;
-		this.activeTo = activeTo;
+		this.status = status;
 		this.statistics = statistics;
 	}
 
-	public UserId getUserId() {
-		return userId;
+	public UserId getId() {
+		return id;
 	}
 
 	public OffsetDateTime getActiveFrom() {
 		return activeFrom;
 	}
 
-	public OffsetDateTime getActiveTo() {
-		return activeTo;
+	public Status getStatus() {
+		return status;
 	}
 
 	public Statistics getStatistics() {
@@ -71,11 +62,7 @@ public class TeamMember {
 	}
 
 	public boolean isActive() {
-		return this.getActiveTo().isAfter(OffsetDateTime.now());
-	}
-
-	public boolean isInactive() {
-		return this.getActiveTo().isBefore(OffsetDateTime.now());
+		return this.status == Status.ACTIVE;
 	}
 
 	public boolean isEmpty() {
@@ -83,31 +70,28 @@ public class TeamMember {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		TeamMember that = (TeamMember) o;
-		return Objects.equals(userId, that.userId) &&
-			Objects.equals(activeFrom, that.activeFrom) &&
-			Objects.equals(activeTo, that.activeTo) &&
-			Objects.equals(statistics, that.statistics);
+		final TeamMember that = (TeamMember) o;
+		return Objects.equals(id, that.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(userId, activeFrom, activeTo, statistics);
+		return Objects.hash(id);
 	}
 
 	@Override
 	public String toString() {
 		return "TeamMember{" +
-			"userId=" + userId +
+			"id=" + id +
 			", activeFrom=" + activeFrom +
-			", activeTo=" + activeTo +
+			", status=" + status +
 			", statistics=" + statistics +
 			'}';
 	}

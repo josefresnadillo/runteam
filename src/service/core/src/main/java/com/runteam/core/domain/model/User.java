@@ -20,7 +20,7 @@ public class User {
 	private final UserId id;
 	private UserCredentials credentials = UserCredentials.EMPTY;
 	private UserDetails details = UserDetails.builder().build();
-	private UserStatus status = UserStatus.INACTIVE;
+	private Status status = Status.INACTIVE;
 	private Privacy privacy = Privacy.PUBLIC;
 	private UserSubscriptionType subscriptionType = UserSubscriptionType.BASIC;
 	private OffsetDateTime activationDate = DEFAULT_ACTIVATION_DATE;
@@ -50,11 +50,11 @@ public class User {
 		this.details = details;
 	}
 
-	public UserStatus getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(final UserStatus status) {
+	public void setStatus(final Status status) {
 		this.status = status;
 	}
 

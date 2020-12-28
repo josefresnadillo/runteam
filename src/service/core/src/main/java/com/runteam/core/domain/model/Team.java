@@ -26,7 +26,6 @@ public class Team {
 	private Privacy privacy = Privacy.PUBLIC;
 	private OffsetDateTime activationDate = DEFAULT_ACTIVATION_DATE;
 	private final List<TeamMember> members = new ArrayList<>();
-	private final List<UserId> applicants = new ArrayList<>();
 
 	public Team(final TeamId id,
 	            final UserId owner) {
@@ -74,10 +73,6 @@ public class Team {
 		this.activationDate = activationDate;
 	}
 
-	public List<UserId> getApplicants() {
-		return applicants;
-	}
-
 	public Statistics statistics() {
 		return this.members.stream().map(TeamMember::getStatistics).reduce(Statistics.zero(), Statistics::add);
 	}
@@ -90,43 +85,47 @@ public class Team {
 
 	public List<TeamMember> getInactiveMembers() {
 		return this.members.stream()
-		                   .filter(TeamMember::isInactive)
+		                   .filter(teamMember -> teamMember.getStatus() == Status.INACTIVE)
 		                   .collect(Collectors.toList());
 	}
 
-	public void addApplicant(final UserId userId) {
-		if (!this.applicants.contains(userId)) {
-			this.applicants.add(userId);
-		}
+	public List<TeamMember> getPendingMembers() {
+		return this.members.stream()
+		                   .filter(teamMember -> teamMember.getStatus() == Status.PENDING)
+		                   .collect(Collectors.toList());
 	}
 
-	public void removeApplicant(final UserId userId) {
-		this.applicants.remove(userId);
-	}
-
-	public void addMember(final UserId userId,
-	                      final OffsetDateTime now) {
-		removeApplicant(userId);
+	public void addActiveMember(final UserId userId,
+	                            final OffsetDateTime now) {
 		final TeamMember teamMember = findTeamMemberById(this.members, userId);
 		if (teamMember.isEmpty()) {
 			this.members.add(new TeamMember(userId,
 			                                now,
-			                                TeamMember.MAX_TEAM_MEMBER_VALID_TO,
+			                                Status.ACTIVE,
 			                                Statistics.zero()));
-			return;
-		}
-		if (teamMember.isInactive()) {
+		} else {
 			updateTeamMember(teamMember,
-			                 TeamMember.MAX_TEAM_MEMBER_VALID_TO,
+			                 Status.ACTIVE,
+			                 now,
 			                 teamMember.getStatistics());
 		}
 	}
 
-	public void removeMember(final UserId userId,
-	                         final OffsetDateTime now) {
+	public void addPendingMember(final UserId userId,
+	                             final OffsetDateTime now) {
+		final TeamMember teamMember = new TeamMember(userId,
+		                                             now,
+		                                             Status.PENDING,
+		                                             Statistics.zero());
+		this.members.remove(teamMember);
+		this.members.add(teamMember);
+	}
+
+	public void removeMember(final UserId userId) {
 		final TeamMember member = findTeamMemberById(this.getActiveMembers(), userId);
 		updateTeamMember(member,
-		                 now, // set to inactive from now on
+		                 Status.INACTIVE,
+		                 member.getActiveFrom(),
 		                 member.getStatistics());
 	}
 
@@ -134,18 +133,20 @@ public class Team {
 	                          final Statistics statistics) {
 		final TeamMember member = findTeamMemberById(this.getActiveMembers(), userId);
 		updateTeamMember(member,
-		                 member.getActiveTo(),
+		                 member.getStatus(),
+		                 member.getActiveFrom(),
 		                 member.addStatistics(statistics));
 	}
 
 	private void updateTeamMember(final TeamMember teamMember,
-	                              final OffsetDateTime activeTo,
+	                              final Status status,
+	                              final OffsetDateTime now,
 	                              final Statistics statistics) {
 		if (!teamMember.isEmpty()) {
 			this.members.remove(teamMember);
-			this.members.add(new TeamMember(teamMember.getUserId(),
-			                                teamMember.getActiveFrom(),
-			                                activeTo,
+			this.members.add(new TeamMember(teamMember.getId(),
+			                                now,
+			                                status,
 			                                statistics));
 		}
 	}
@@ -153,7 +154,7 @@ public class Team {
 	private TeamMember findTeamMemberById(final List<TeamMember> users,
 	                                      final UserId userId) {
 		return users.stream()
-		            .filter(m -> m.getUserId().equals(userId))
+		            .filter(m -> m.getId().equals(userId))
 		            .findFirst()
 		            .orElse(TeamMember.EMPTY);
 	}
@@ -184,7 +185,6 @@ public class Team {
 			", status=" + status +
 			", activationDate=" + activationDate +
 			", activeMembers=" + members +
-			", applicantMembers=" + applicants +
 			'}';
 	}
 }

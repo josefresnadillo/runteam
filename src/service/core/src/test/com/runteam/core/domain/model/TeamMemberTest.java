@@ -2,6 +2,7 @@ package com.runteam.core.domain.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.OffsetDateTime;
@@ -15,15 +16,15 @@ public class TeamMemberTest {
 	public void getDetailsTest() {
 		final UserId userId = new UserId("userId");
 		final OffsetDateTime activeFrom = OffsetDateTime.now();
-		final OffsetDateTime activeTo = OffsetDateTime.MAX;
+		final Status status = Status.ACTIVE;
 		final Statistics statistics = new Statistics(10L, 10L, 10L);
 		final TeamMember teamMember = new TeamMember(userId,
 		                                             activeFrom,
-		                                             activeTo,
+		                                             status,
 		                                             statistics);
-		assertEquals(teamMember.getUserId(), userId);
+		assertEquals(teamMember.getId(), userId);
 		assertEquals(teamMember.getActiveFrom(), activeFrom);
-		assertEquals(teamMember.getActiveTo(), activeTo);
+		assertEquals(teamMember.getStatus(), status);
 		assertEquals(teamMember.getStatistics(), statistics);
 	}
 
@@ -38,7 +39,7 @@ public class TeamMemberTest {
 	public void memberIsNotEmptyTest() {
 		final TeamMember teamMember = new TeamMember(new UserId("teamId"),
 		                                             OffsetDateTime.now(),
-		                                             OffsetDateTime.MAX,
+		                                             Status.PENDING,
 		                                             Statistics.zero());
 		assertFalse(teamMember.isEmpty());
 	}
@@ -48,7 +49,7 @@ public class TeamMemberTest {
 	public void memberActiveTest() {
 		final TeamMember teamMember = new TeamMember(new UserId("teamId"),
 		                                             OffsetDateTime.now(),
-		                                             OffsetDateTime.MAX,
+		                                             Status.ACTIVE,
 		                                             Statistics.zero());
 		assertTrue(teamMember.isActive());
 	}
@@ -58,9 +59,9 @@ public class TeamMemberTest {
 	public void memberInactiveTest() {
 		final TeamMember teamMember = new TeamMember(new UserId("teamId"),
 		                                             OffsetDateTime.now(),
-		                                             OffsetDateTime.now().minusDays(1),
+		                                             Status.INACTIVE,
 		                                             Statistics.zero());
-		assertTrue(teamMember.isInactive());
+		assertSame(teamMember.getStatus(), Status.INACTIVE);
 	}
 
 	@Test
@@ -68,7 +69,7 @@ public class TeamMemberTest {
 	public void memberAddStatisticsTest() {
 		final TeamMember teamMember = new TeamMember(new UserId("teamId"),
 		                                             OffsetDateTime.now(),
-		                                             OffsetDateTime.now().minusDays(1),
+		                                             Status.ACTIVE,
 		                                             Statistics.zero());
 		final Statistics newStatistics = teamMember.addStatistics(new Statistics(10L, 10L, 10L));
 		assertEquals(newStatistics.getTotalMeters(), 10);

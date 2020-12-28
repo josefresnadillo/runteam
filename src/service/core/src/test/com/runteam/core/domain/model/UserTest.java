@@ -17,7 +17,7 @@ public class UserTest {
 		final User user = new User(new UserId("userId"));
 		user.setDetails(UserDetails.builder().build());
 		user.setCredentials(userCredentials);
-		user.setStatus(UserStatus.SUSPENDED);
+		user.setStatus(Status.SUSPENDED);
 		user.setPrivacy(Privacy.PUBLIC);
 		user.setActivationDate(OffsetDateTime.MAX);
 		user.setSubscriptionType(UserSubscriptionType.PREMIUM);
@@ -26,7 +26,7 @@ public class UserTest {
 		assertEquals(user.getCredentials(), userCredentials);
 		assertEquals(user.getCredentials().getUsername(), userCredentials.getUsername());
 		assertEquals(user.getCredentials().getSecret(), userCredentials.getSecret());
-		assertEquals(user.getStatus(), UserStatus.SUSPENDED);
+		assertEquals(user.getStatus(), Status.SUSPENDED);
 		assertEquals(user.getPrivacy(), Privacy.PUBLIC);
 		assertEquals(user.getActivationDate(), OffsetDateTime.MAX);
 		assertEquals(user.getSubscriptionType(), UserSubscriptionType.PREMIUM);

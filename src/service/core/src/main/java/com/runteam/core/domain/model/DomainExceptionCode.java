@@ -9,7 +9,7 @@ public enum DomainExceptionCode {
 	TOO_MANY_CHALLENGES("Too many challenges for subscription type"),
 	TOO_MANY_USERS_IN_TEAMS("Too many users in teams for subscription type"),
 	ONLY_OWNER_CAN_ADD_TEAM_TO_CHALLENGE("Only the owner of a team can add it to a challenge"),
-	TEAM_IS_PRIVATE("Team is private"),
+	USER_ALREADY_IN_TEAM("User is already in team"),
 	CHALLENGE_IS_PRIVATE("Challenge is private"),
 	TEAM_IN_TOO_MANY_CHALLENGES("Team in too many challenges for subscription type"),
 	CHALLENGE_HAS_TOO_MANY_TEAMS("Challenge has too many teams for subscription type");

@@ -16,7 +16,7 @@ public class TeamTest {
 		                                           .displayName("Best Team")
 		                                           .city("Madrid")
 		                                           .countryCode("es")
-		                                           .imageUrl("https://imageurl")
+		                                           .imageUrl("https://google.com")
 		                                           .build();
 		final Team team = new Team(new TeamId("teamId"), new UserId("ownerId"));
 		team.setDetails(teamDetails);
@@ -33,9 +33,8 @@ public class TeamTest {
 	@DisplayName("Test team add member")
 	public void addMembersTest() {
 		final Team team = new Team(new TeamId("teamId"), new UserId("ownerId"));
-		team.addMember(new UserId("userIdActive"), OffsetDateTime.now());
+		team.addActiveMember(new UserId("userIdActive"), OffsetDateTime.now());
 		assertEquals(team.getActiveMembers().size(), 1);
-		assertEquals(team.getInactiveMembers().size(), 0);
 	}
 
 	@Test
@@ -43,8 +42,8 @@ public class TeamTest {
 	public void addExistingMembersTest() {
 		final UserId userIdActive = new UserId("userIdActive");
 		final Team team = new Team(new TeamId("teamId"), new UserId("ownerId"));
-		team.addMember(userIdActive, OffsetDateTime.now());
-		team.addMember(userIdActive, OffsetDateTime.now());
+		team.addActiveMember(userIdActive, OffsetDateTime.now());
+		team.addActiveMember(userIdActive, OffsetDateTime.now());
 		assertEquals(team.getActiveMembers().size(), 1);
 		assertEquals(team.getInactiveMembers().size(), 0);
 	}
@@ -55,12 +54,27 @@ public class TeamTest {
 		final UserId userIdInactive = new UserId("userIdInactive");
 
 		final Team team = new Team(new TeamId("teamId"), new UserId("ownerId"));
-		team.addMember(new UserId("userIdActive"), OffsetDateTime.now());
-		team.addMember(userIdInactive, OffsetDateTime.now());
-		team.removeMember(userIdInactive, OffsetDateTime.now()); // set to inactive
+		team.addActiveMember(new UserId("userIdActive"), OffsetDateTime.now());
 
-		team.addMember(userIdInactive, OffsetDateTime.now()); // add again
+		team.addActiveMember(userIdInactive, OffsetDateTime.now()); // add
+		team.removeMember(userIdInactive); // set to inactive
+		team.addActiveMember(userIdInactive, OffsetDateTime.now()); // add again
+
 		assertEquals(team.getActiveMembers().size(), 2);
+		assertEquals(team.getInactiveMembers().size(), 0);
+	}
+
+	@Test
+	@DisplayName("Test team add pending member")
+	public void addPendingMemberTest() {
+		final UserId userIdInactive = new UserId("userIdInactive");
+
+		final Team team = new Team(new TeamId("teamId"), new UserId("ownerId"));
+
+		team.addPendingMember(userIdInactive, OffsetDateTime.now()); // add
+
+		assertEquals(team.getActiveMembers().size(), 0);
+		assertEquals(team.getPendingMembers().size(), 1);
 		assertEquals(team.getInactiveMembers().size(), 0);
 	}
 
@@ -69,47 +83,12 @@ public class TeamTest {
 	public void removeMembersTest() {
 		final UserId userIdActive = new UserId("userIdActive");
 		final Team team = new Team(new TeamId("teamId"), new UserId("ownerId"));
-		team.addMember(userIdActive, OffsetDateTime.now());
-		team.removeMember(userIdActive, OffsetDateTime.now());
+
+		team.addActiveMember(userIdActive, OffsetDateTime.now());
+		team.removeMember(userIdActive);
+
 		assertEquals(team.getActiveMembers().size(), 0);
 		assertEquals(team.getInactiveMembers().size(), 1);
-	}
-
-	@Test
-	@DisplayName("Test team add applicant")
-	public void addApplicantTest() {
-		final Team team = new Team(new TeamId("id"), new UserId("ownerId"));
-		team.addApplicant(new UserId("id1"));
-		assertEquals(team.getApplicants().size(), 1);
-	}
-
-	@Test
-	@DisplayName("Test team add existing applicant")
-	public void addExistingApplicantTest() {
-		final UserId userId = new UserId("id1");
-		final Team team = new Team(new TeamId("id"), new UserId("ownerId"));
-		team.addApplicant(userId);
-		team.addApplicant(userId);
-		assertEquals(team.getApplicants().size(), 1);
-	}
-
-	@Test
-	@DisplayName("Test team remove existing applicant")
-	public void removeExistingApplicantTest() {
-		final UserId userId = new UserId("id1");
-		final Team team = new Team(new TeamId("id"), new UserId("ownerId"));
-		team.addApplicant(userId);
-		team.removeApplicant(userId);
-		assertEquals(team.getApplicants().size(), 0);
-	}
-
-	@Test
-	@DisplayName("Test team remove non existing applicant")
-	public void removeNonExistingApplicantTest() {
-		final Team team = new Team(new TeamId("id"), new UserId("ownerId"));
-		team.addApplicant(new UserId("id1"));
-		team.removeApplicant(new UserId("otherId"));
-		assertEquals(team.getApplicants().size(), 1);
 	}
 
 	@Test
@@ -117,7 +96,7 @@ public class TeamTest {
 	public void AddStatisticsTest() {
 		final UserId userId = new UserId("id1");
 		final Team team = new Team(new TeamId("id"), new UserId("ownerId"));
-		team.addMember(userId, OffsetDateTime.now());
+		team.addActiveMember(userId, OffsetDateTime.now());
 		team.addStatistics(userId, new Statistics(10L, 10L, 10L));
 		team.addStatistics(userId, new Statistics(5L, 5L, 5L));
 		assertEquals(team.statistics().getTotalMeters(), 15);
@@ -129,7 +108,7 @@ public class TeamTest {
 	@DisplayName("Test team add statistics of non existing applicant")
 	public void AddStatisticsNonExistingUserTest() {
 		final Team team = new Team(new TeamId("id"), new UserId("ownerId"));
-		team.addMember(new UserId("id1"), OffsetDateTime.now());
+		team.addActiveMember(new UserId("id1"), OffsetDateTime.now());
 		team.addStatistics(new UserId("nonExisting"), new Statistics(10L, 10L, 10L));
 		assertEquals(team.statistics().getTotalMeters(), 0);
 		assertEquals(team.statistics().getTotalSeconds(), 0);

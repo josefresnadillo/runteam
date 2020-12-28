@@ -2,8 +2,9 @@ package com.runteam.core.domain.model;
 
 // Value Object
 
-public enum UserStatus {
+public enum Status {
 	ACTIVE,
 	INACTIVE,
-	SUSPENDED
+	SUSPENDED,
+	PENDING
 }
