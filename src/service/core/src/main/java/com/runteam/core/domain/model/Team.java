@@ -1,36 +1,32 @@
 package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.ZoneId;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-// Aggregate
+// Entity
 
 public class Team {
 
-	private static final OffsetDateTime DEFAULT_ACTIVATION_DATE = OffsetDateTime.of(2048,
-	                                                                                1,
-	                                                                                1,
-	                                                                                0,
-	                                                                                0,
-	                                                                                0,
-	                                                                                0,
-	                                                                                ZoneOffset.UTC);
 	private final TeamId id;
 	private final UserId owner;
+	private final OffsetDateTime creationDate;
+	private final int numberOfMembers;
+	private final int numberOfMemberships;
 	private TeamDetails details = TeamDetails.builder().build();
-	private TeamStatus status = TeamStatus.INACTIVE;
+	private Status status = Status.INACTIVE;
 	private Privacy privacy = Privacy.PUBLIC;
-	private OffsetDateTime activationDate = DEFAULT_ACTIVATION_DATE;
-	private final List<TeamMember> members = new ArrayList<>();
+	private Statistics statistics = Statistics.zero();
 
 	public Team(final TeamId id,
-	            final UserId owner) {
+	            final UserId owner,
+	            final int numberOfMembers,
+	            final int numberOfMemberships) {
 		this.id = id;
 		this.owner = owner;
+		this.creationDate = OffsetDateTime.now(ZoneId.of("UTC"));
+		this.numberOfMembers = numberOfMembers;
+		this.numberOfMemberships = numberOfMemberships;
 	}
 
 	public TeamId getId() {
@@ -41,6 +37,18 @@ public class Team {
 		return owner;
 	}
 
+	public OffsetDateTime getCreationDate() {
+		return creationDate;
+	}
+
+	public int getNumberOfMembers() {
+		return this.numberOfMembers;
+	}
+
+	public int getNumberOfMemberships() {
+		return numberOfMemberships;
+	}
+
 	public TeamDetails getDetails() {
 		return details;
 	}
@@ -49,11 +57,11 @@ public class Team {
 		this.details = details;
 	}
 
-	public TeamStatus getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(final TeamStatus status) {
+	public void setStatus(final Status status) {
 		this.status = status;
 	}
 
@@ -65,98 +73,37 @@ public class Team {
 		this.privacy = privacy;
 	}
 
-	public OffsetDateTime getActivationDate() {
-		return activationDate;
+	public Statistics getStatistics() {
+		return statistics;
 	}
 
-	public void setActivationDate(final OffsetDateTime activationDate) {
-		this.activationDate = activationDate;
+	public void addStatistics(final Statistics statistics) {
+		this.statistics = this.statistics.add(statistics);
 	}
 
-	public Statistics statistics() {
-		return this.members.stream().map(TeamMember::getStatistics).reduce(Statistics.zero(), Statistics::add);
+	public boolean isPrivate(final UserId userId) {
+		return (this.getPrivacy() == Privacy.PRIVATE) && (!this.getOwnerId().equals(userId));
 	}
 
-	public List<TeamMember> getActiveMembers() {
-		return this.members.stream()
-		                   .filter(TeamMember::isActive)
-		                   .collect(Collectors.toList());
+	public TeamMember addMember(final UserId userId,
+	                            final Status status) {
+		final TeamMember teamMember = new TeamMember(TeamMemberId.randomId());
+		teamMember.setUserId(userId);
+		teamMember.setTeamId(this.getId());
+		teamMember.setStatus(status);
+		return teamMember;
 	}
 
-	public List<TeamMember> getInactiveMembers() {
-		return this.members.stream()
-		                   .filter(teamMember -> teamMember.getStatus() == Status.INACTIVE)
-		                   .collect(Collectors.toList());
-	}
-
-	public List<TeamMember> getPendingMembers() {
-		return this.members.stream()
-		                   .filter(teamMember -> teamMember.getStatus() == Status.PENDING)
-		                   .collect(Collectors.toList());
-	}
-
-	public void addActiveMember(final UserId userId,
-	                            final OffsetDateTime now) {
-		final TeamMember teamMember = findTeamMemberById(this.members, userId);
-		if (teamMember.isEmpty()) {
-			this.members.add(new TeamMember(userId,
-			                                now,
-			                                Status.ACTIVE,
-			                                Statistics.zero()));
-		} else {
-			updateTeamMember(teamMember,
-			                 Status.ACTIVE,
-			                 now,
-			                 teamMember.getStatistics());
+	public void checkIsActiveOrThrow(){
+		if (getStatus() != Status.ACTIVE) {
+			throw new DomainException(DomainExceptionCode.TEAM_IS_NOT_ACTIVE);
 		}
 	}
 
-	public void addPendingMember(final UserId userId,
-	                             final OffsetDateTime now) {
-		final TeamMember teamMember = new TeamMember(userId,
-		                                             now,
-		                                             Status.PENDING,
-		                                             Statistics.zero());
-		this.members.remove(teamMember);
-		this.members.add(teamMember);
-	}
-
-	public void removeMember(final UserId userId) {
-		final TeamMember member = findTeamMemberById(this.getActiveMembers(), userId);
-		updateTeamMember(member,
-		                 Status.INACTIVE,
-		                 member.getActiveFrom(),
-		                 member.getStatistics());
-	}
-
-	public void addStatistics(final UserId userId,
-	                          final Statistics statistics) {
-		final TeamMember member = findTeamMemberById(this.getActiveMembers(), userId);
-		updateTeamMember(member,
-		                 member.getStatus(),
-		                 member.getActiveFrom(),
-		                 member.addStatistics(statistics));
-	}
-
-	private void updateTeamMember(final TeamMember teamMember,
-	                              final Status status,
-	                              final OffsetDateTime now,
-	                              final Statistics statistics) {
-		if (!teamMember.isEmpty()) {
-			this.members.remove(teamMember);
-			this.members.add(new TeamMember(teamMember.getId(),
-			                                now,
-			                                status,
-			                                statistics));
+	public void checkOwnerOrThrow(final UserId userId){
+		if (!getOwnerId().equals(userId)) {
+			throw new DomainException(DomainExceptionCode.TEAM_OWNER_IS_NECESSARY);
 		}
-	}
-
-	private TeamMember findTeamMemberById(final List<TeamMember> users,
-	                                      final UserId userId) {
-		return users.stream()
-		            .filter(m -> m.getId().equals(userId))
-		            .findFirst()
-		            .orElse(TeamMember.EMPTY);
 	}
 
 	@Override
@@ -183,8 +130,7 @@ public class Team {
 			", owner=" + owner +
 			", details=" + details +
 			", status=" + status +
-			", activationDate=" + activationDate +
-			", activeMembers=" + members +
+			", activationDate=" + creationDate +
 			'}';
 	}
 }

@@ -1,30 +1,11 @@
 package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.Objects;
 
 // Value Object
 
 public class ChallengeGoal {
-
-	public static final OffsetDateTime DEFAULT_VALID_FROM = OffsetDateTime.of(1970,
-	                                                                          1,
-	                                                                          1,
-	                                                                          0,
-	                                                                          0,
-	                                                                          0,
-	                                                                          0,
-	                                                                          ZoneOffset.UTC);
-
-	public static final OffsetDateTime DEFAULT_VALID_TO = OffsetDateTime.of(2048,
-	                                                                        1,
-	                                                                        1,
-	                                                                        0,
-	                                                                        0,
-	                                                                        0,
-	                                                                        0,
-	                                                                        ZoneOffset.UTC);
 
 	public static final ChallengeGoal EMPTY = ChallengeGoal.zero();
 
@@ -62,8 +43,8 @@ public class ChallengeGoal {
 	public static ChallengeGoal zero() {
 		return new ChallengeGoal(0L,
 		                         0L,
-		                         DEFAULT_VALID_FROM,
-		                         DEFAULT_VALID_TO);
+		                         OffsetDateTime.MIN,
+		                         OffsetDateTime.MAX);
 	}
 
 	@Override

@@ -1,110 +1,114 @@
 package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.Objects;
 
-// Value Object
+// Entity
 
 public class ChallengeMember {
 
-    public static final OffsetDateTime MIN_TEAM_MEMBER_VALID_TO = OffsetDateTime.of(1970,
-            1,
-            1,
-            0,
-            0,
-            0,
-            0,
-            ZoneOffset.UTC);
+	public static final ChallengeMember EMPTY = new ChallengeMember(ChallengeMemberId.EMPTY) {
+		public boolean isEmpty() {
+			return true;
+		}
+	};
 
-    public static final OffsetDateTime MAX_TEAM_MEMBER_VALID_TO = OffsetDateTime.of(2048,
-            1,
-            1,
-            0,
-            0,
-            0,
-            0,
-            ZoneOffset.UTC);
+	private final ChallengeMemberId id;
+	private final OffsetDateTime creationDate;
+	private ChallengeId challengeId;
+	private TeamId teamId;
+	private Status status = Status.INACTIVE;
+	private Statistics statistics = Statistics.zero();
 
-    public static final ChallengeMember EMPTY = new ChallengeMember(TeamId.EMPTY,
-            MIN_TEAM_MEMBER_VALID_TO,
-            MIN_TEAM_MEMBER_VALID_TO,
-            Statistics.EMPTY) {
-        public boolean isEmpty() {
-            return true;
-        }
-    };
+	public ChallengeMember(final ChallengeMemberId id) {
+		this.id = id;
+		this.creationDate = OffsetDateTime.now(ZoneId.of("UTC"));
+	}
 
-    private final TeamId teamId;
-    private final OffsetDateTime activeFrom;
-    private final OffsetDateTime activeTo;
-    private final Statistics statistics;
+	public ChallengeMember(final ChallengeMemberId id,
+	                       final ChallengeId challengeId,
+	                       final TeamId teamId) {
+		this.id = id;
+		this.challengeId = challengeId;
+		this.teamId = teamId;
+		this.creationDate = OffsetDateTime.now(ZoneId.of("UTC"));
+	}
 
-    public ChallengeMember(final TeamId teamId,
-                           final OffsetDateTime activeFrom,
-                           final OffsetDateTime activeTo,
-                           final Statistics statistics) {
-        this.teamId = teamId;
-        this.activeFrom = activeFrom;
-        this.activeTo = activeTo;
-        this.statistics = statistics;
-    }
+	public ChallengeMemberId getId() {
+		return id;
+	}
 
-    public TeamId getTeamId() {
-        return teamId;
-    }
+	public OffsetDateTime getCreationDate() {
+		return creationDate;
+	}
 
-    public OffsetDateTime getActiveFrom() {
-        return activeFrom;
-    }
+	public ChallengeId getChallengeId() {
+		return challengeId;
+	}
 
-    public OffsetDateTime getActiveTo() {
-        return activeTo;
-    }
+	public void setChallengeId(final ChallengeId challengeId) {
+		this.challengeId = challengeId;
+	}
 
-    public Statistics getStatistics() {
-        return isActive() ? statistics : new Statistics(0L, 0L, 0L);
-    }
+	public TeamId getTeamId() {
+		return teamId;
+	}
 
-    public Statistics addStatistics(final Statistics statistics) {
-        return this.statistics.add(statistics);
-    }
+	public void setTeamId(final TeamId teamId) {
+		this.teamId = teamId;
+	}
 
-    public boolean isActive() {
-        return this.activeTo.isAfter(OffsetDateTime.now());
-    }
+	public Status getStatus() {
+		return status;
+	}
 
-    public boolean isInactive() {
-        return this.activeTo.isBefore(OffsetDateTime.now());
-    }
+	public void setStatus(final Status status) {
+		this.status = status;
+	}
 
-    public boolean isEmpty() {
-        return false;
-    }
+	public Statistics getStatistics() {
+		return statistics;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChallengeMember that = (ChallengeMember) o;
-        return Objects.equals(teamId, that.teamId) &&
-                Objects.equals(activeFrom, that.activeFrom) &&
-                Objects.equals(activeTo, that.activeTo) &&
-                Objects.equals(statistics, that.statistics);
-    }
+	public void addStatistics(final Statistics statistics) {
+		this.statistics = this.statistics.add(statistics);
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(teamId, activeFrom, statistics);
-    }
+	public boolean isActive() {
+		return this.status == Status.ACTIVE;
+	}
 
-    @Override
-    public String toString() {
-        return "ChallengeMember{" +
-                "teamId=" + teamId +
-                ", activeFrom=" + activeFrom +
-                ", activeFrom=" + activeTo +
-                ", statistics=" + statistics +
-                '}';
-    }
+	public boolean isEmpty() {
+		return false;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		final ChallengeMember that = (ChallengeMember) o;
+		return Objects.equals(id, that.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public String toString() {
+		return "ChallengeMember{" +
+			"id=" + id +
+			", creationDate=" + creationDate +
+			", challengeId=" + challengeId +
+			", teamId=" + teamId +
+			", status=" + status +
+			", statistics=" + statistics +
+			'}';
+	}
 }

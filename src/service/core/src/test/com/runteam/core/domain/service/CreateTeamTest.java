@@ -2,24 +2,17 @@ package com.runteam.core.domain.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 
 import com.runteam.core.domain.model.DomainException;
 import com.runteam.core.domain.model.DomainExceptionCode;
+import com.runteam.core.domain.model.Status;
 import com.runteam.core.domain.model.Team;
 import com.runteam.core.domain.model.TeamDetails;
-import com.runteam.core.domain.model.TeamId;
-import com.runteam.core.domain.model.TeamStatus;
 import com.runteam.core.domain.model.User;
 import com.runteam.core.domain.model.UserId;
 import com.runteam.core.domain.model.UserSubscriptionType;
-import com.runteam.core.domain.repository.TeamRepository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 public class CreateTeamTest {
 
@@ -29,13 +22,12 @@ public class CreateTeamTest {
 
 		// User who wants to create a team
 		final UserId ownerUserId = new UserId("ownerUserId");
-		final User ownerUser = new User(ownerUserId);
+		final User ownerUser = new User(ownerUserId,
+		                                0,
+		                                0,
+		                                0);
 		ownerUser.setSubscriptionType(UserSubscriptionType.BASIC);
-
-		// Mock a list of teams already created by the user
-		final TeamRepository teamRepository = mock(TeamRepository.class);
-		final Team team = new Team(new TeamId("teamId"), ownerUserId);
-		Mockito.when(teamRepository.findByOwnerId(ownerUserId)).thenReturn(List.of(team));
+		ownerUser.setStatus(Status.ACTIVE);
 
 		// Create a team with details
 		final TeamDetails teamDetails = TeamDetails.builder()
@@ -44,35 +36,49 @@ public class CreateTeamTest {
 		                                           .city("Madrid")
 		                                           .countryCode("es")
 		                                           .build();
-		final CreateTeam createTeam = new CreateTeam(teamRepository);
+		final CreateTeam createTeam = new CreateTeam();
 		final Team result = createTeam.active(ownerUser, teamDetails);
 
 		assertEquals(result.getOwnerId(), ownerUser.getId());
-		assertEquals(result.getStatus(), TeamStatus.ACTIVE);
+		assertEquals(result.getStatus(), Status.ACTIVE);
 		assertEquals(result.getDetails(), teamDetails);
 	}
 
 	@Test
-	@DisplayName("Test create team too many teams")
+	@DisplayName("Test manager user is inactive")
+	public void userIsInactive() {
+
+		// User who wants to create a team
+		final UserId ownerUserId = new UserId("ownerUserId");
+		final User ownerUser = new User(ownerUserId,
+		                                0,
+		                                UserSubscriptionType.BASIC.getMaxTeams(),
+		                                0);
+		ownerUser.setSubscriptionType(UserSubscriptionType.BASIC);
+		ownerUser.setStatus(Status.INACTIVE);
+
+		// Create a team
+		final CreateTeam createTeam = new CreateTeam();
+		DomainException exception = assertThrows(DomainException.class, () -> createTeam.active(ownerUser, TeamDetails.builder().build()));
+		assertEquals(exception.getCode(), DomainExceptionCode.USER_IS_NOT_ACTIVE);
+	}
+
+	@Test
+	@DisplayName("Test manager user has created too many teams")
 	public void tooManyTeams() {
 
 		// User who wants to create a team
 		final UserId ownerUserId = new UserId("ownerUserId");
-		final User ownerUser = new User(ownerUserId);
+		final User ownerUser = new User(ownerUserId,
+		                                0,
+		                                UserSubscriptionType.BASIC.getMaxTeams(),
+		                                0);
 		ownerUser.setSubscriptionType(UserSubscriptionType.BASIC);
-
-		// create as many teams as the BASIC subscriptions allows
-		final List<Team> teams = new ArrayList<>();
-		IntStream.range(0, UserSubscriptionType.BASIC.getMaxTeams())
-		         .forEach(i -> teams.add(new Team(TeamId.randomId(), ownerUserId)));
-
-		// Mock a list of team already created by the user
-		final TeamRepository teamRepository = mock(TeamRepository.class);
-		Mockito.when(teamRepository.findByOwnerId(ownerUserId)).thenReturn(teams);
+		ownerUser.setStatus(Status.ACTIVE);
 
 		// Create a team
-		final CreateTeam createTeam = new CreateTeam(teamRepository);
+		final CreateTeam createTeam = new CreateTeam();
 		DomainException exception = assertThrows(DomainException.class, () -> createTeam.active(ownerUser, TeamDetails.builder().build()));
-		assertEquals(exception.getCode(), DomainExceptionCode.TOO_MANY_TEAMS);
+		assertEquals(exception.getCode(), DomainExceptionCode.USER_CREATED_TOO_MANY_TEAMS);
 	}
 }

@@ -1,64 +1,78 @@
 package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.Objects;
 
-// Value Object
+// Entity
 
 public class TeamMember {
 
-	public static final OffsetDateTime MIN_TEAM_MEMBER_VALID_TO = OffsetDateTime.of(1970,
-	                                                                                1,
-	                                                                                1,
-	                                                                                0,
-	                                                                                0,
-	                                                                                0,
-	                                                                                0,
-	                                                                                ZoneOffset.UTC);
-
-	public static final TeamMember EMPTY = new TeamMember(UserId.EMPTY,
-	                                                      MIN_TEAM_MEMBER_VALID_TO,
-	                                                      Status.INACTIVE,
-	                                                      Statistics.EMPTY) {
+	public static final TeamMember EMPTY = new TeamMember(TeamMemberId.EMPTY) {
 		public boolean isEmpty() {
 			return true;
 		}
 	};
 
-	private final UserId id;
-	private final OffsetDateTime activeFrom;
-	private final Status status;
-	private final Statistics statistics;
+	private final TeamMemberId id;
+	private final OffsetDateTime creationDate;
+	private TeamId teamId = TeamId.EMPTY;
+	private UserId userId = UserId.EMPTY;
+	private Status status = Status.INACTIVE;
+	private Statistics statistics = Statistics.zero();
 
-	public TeamMember(final UserId id,
-	                  final OffsetDateTime activeFrom,
-	                  final Status status,
-	                  final Statistics statistics) {
+	public TeamMember(final TeamMemberId id) {
 		this.id = id;
-		this.activeFrom = activeFrom;
-		this.status = status;
-		this.statistics = statistics;
+		this.creationDate = OffsetDateTime.now(ZoneId.of("UTC"));
 	}
 
-	public UserId getId() {
+	public TeamMember(final TeamMemberId id,
+	                  final TeamId teamId,
+	                  final UserId userId) {
+		this.id = id;
+		this.teamId = teamId;
+		this.userId = userId;
+		this.creationDate = OffsetDateTime.now(ZoneId.of("UTC"));
+	}
+
+	public TeamMemberId getId() {
 		return id;
 	}
 
-	public OffsetDateTime getActiveFrom() {
-		return activeFrom;
+	public OffsetDateTime getCreationDate() {
+		return creationDate;
+	}
+
+	public TeamId getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(final TeamId teamId) {
+		this.teamId = teamId;
+	}
+
+	public UserId getUserId() {
+		return userId;
+	}
+
+	public void setUserId(final UserId userId) {
+		this.userId = userId;
 	}
 
 	public Status getStatus() {
 		return status;
 	}
 
-	public Statistics getStatistics() {
-		return isActive() ? statistics : new Statistics(0L, 0L, 0L);
+	public void setStatus(final Status status) {
+		this.status = status;
 	}
 
-	public Statistics addStatistics(final Statistics statistics) {
-		return this.statistics.add(statistics);
+	public Statistics getStatistics() {
+		return statistics;
+	}
+
+	public void addStatistics(final Statistics statistics) {
+		this.statistics = this.statistics.add(statistics);
 	}
 
 	public boolean isActive() {
@@ -90,7 +104,9 @@ public class TeamMember {
 	public String toString() {
 		return "TeamMember{" +
 			"id=" + id +
-			", activeFrom=" + activeFrom +
+			", creationDate=" + creationDate +
+			", teamId=" + teamId +
+			", userId=" + userId +
 			", status=" + status +
 			", statistics=" + statistics +
 			'}';

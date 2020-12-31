@@ -1,63 +1,89 @@
 package com.runteam.core.domain.service;
 
-import com.runteam.core.domain.infrastructure.SendAddTeamNotification;
 import com.runteam.core.domain.model.DomainException;
 import com.runteam.core.domain.model.DomainExceptionCode;
-import com.runteam.core.domain.model.Privacy;
+import com.runteam.core.domain.model.Status;
 import com.runteam.core.domain.model.Team;
 import com.runteam.core.domain.model.TeamMember;
 import com.runteam.core.domain.model.User;
 import com.runteam.core.domain.model.UserId;
+import com.runteam.core.domain.repository.TeamMemberRepository;
 import com.runteam.core.domain.repository.UserRepository;
-import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class AddUserToTeam {
 
 	private static final Logger LOGGER = Logger.getLogger(AddUserToTeam.class.toString());
 
 	private final UserRepository userRepository;
-	private final SendAddTeamNotification sendAddTeamNotification;
+	private final TeamMemberRepository teamMemberRepository;
 
 	public AddUserToTeam(final UserRepository userRepository,
-	                     final SendAddTeamNotification sendAddTeamNotification) {
+	                     final TeamMemberRepository teamMemberRepository) {
 		this.userRepository = userRepository;
-		this.sendAddTeamNotification = sendAddTeamNotification;
+		this.teamMemberRepository = teamMemberRepository;
 	}
 
-	public Team add(final UserId userId,
-	                final Team team,
-	                final UserId newUserId) {
+	public TeamMember add(final User managerUser,
+	                      final Team team,
+	                      final User newUser) {
 
-		// Check if team has too many users
-		// Depends on the team owner subscription
-		final User owner = userRepository.findById(team.getOwnerId());
-		if (team.getActiveMembers().size() >= owner.getSubscriptionType().getMaxTeamsUserBelongs()) {
-			LOGGER.info(DomainExceptionCode.TOO_MANY_USERS_IN_TEAMS + ": " + team);
-			throw new DomainException(DomainExceptionCode.TOO_MANY_USERS_IN_TEAMS);
+		// Check if manager user is active
+		managerUser.checkIsActiveOrThrow();
+
+		// Check if new user is active
+		newUser.checkIsActiveOrThrow();
+
+		// Check if team is active
+		team.checkIsActiveOrThrow();
+
+		// Check if the user belongs to too many teams
+		newUser.checkNumberOfMembershipsOrThrow();
+
+		// Retrieve member
+		final TeamMember member = retrieveMemberOrCreate(team, newUser.getId());
+
+		// Check if the user is already active in the team
+		checkMemberAlreadyActiveInTeam(member);
+
+		// Add the user as PENDING or ACTIVE
+		// Depending on if the team is private to the manager user
+		member.setStatus(Status.PENDING);
+		if (!team.isPrivate(managerUser.getId())) {
+			// Check the number of ACTIVE users in the team
+			checkUsersInTeam(team);
+			// Add as ACTIVE
+			member.setStatus(Status.ACTIVE);
 		}
 
-		// Check if user is already active in team
-		final List<UserId> activeUsers = team.getActiveMembers().stream()
-		                                     .map(TeamMember::getId)
-		                                     .collect(Collectors.toList());
-		if (activeUsers.contains(newUserId)){
-			LOGGER.info(DomainExceptionCode.USER_ALREADY_IN_TEAM + ": " + team);
+		return member;
+	}
+
+	// Retrieve team member
+	// If empty, then create one
+	private TeamMember retrieveMemberOrCreate(final Team team,
+	                                          final UserId newUserId) {
+		final TeamMember teamMember = teamMemberRepository.findByTeamIdAndUserId(team.getId(), newUserId);
+		return teamMember.isEmpty() ?
+		       team.addMember(newUserId, Status.INACTIVE) :
+		       teamMember;
+	}
+
+	// Check if user is already active in team
+	private void checkMemberAlreadyActiveInTeam(final TeamMember member) {
+		if (member.getStatus() == Status.ACTIVE) {
+			LOGGER.info(DomainExceptionCode.USER_ALREADY_IN_TEAM + ": " + member);
 			throw new DomainException(DomainExceptionCode.USER_ALREADY_IN_TEAM);
 		}
+	}
 
-		// If team is private, only the owner can add a new user
-		final boolean isTeamOwner = team.getOwnerId().equals(userId);
-		if ((team.getPrivacy() == Privacy.PRIVATE) && (!isTeamOwner)) {
-			final User newUser = userRepository.findById(newUserId);
-			sendAddTeamNotification.send(owner, team, newUser);
-			team.addPendingMember(newUserId, OffsetDateTime.now());
-		} else {
-			team.addActiveMember(newUserId, OffsetDateTime.now());
+	// Check if team has too many users
+	// Depends on the team owner subscription
+	private void checkUsersInTeam(final Team team) {
+		final User owner = userRepository.findById(team.getOwnerId());
+		if (team.getNumberOfMembers() >= owner.getSubscriptionType().getMaxTeamMembers()) {
+			LOGGER.info(DomainExceptionCode.TEAM_HAS_TOO_MANY_USERS + ": " + team);
+			throw new DomainException(DomainExceptionCode.TEAM_HAS_TOO_MANY_USERS);
 		}
-
-		return team;
 	}
 }

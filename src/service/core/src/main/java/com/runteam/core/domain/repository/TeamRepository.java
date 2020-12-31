@@ -14,5 +14,5 @@ public interface TeamRepository {
 
 	Team findById(final TeamId teamId);
 
-	List<Team> findByOwnerId(final UserId userId);
+	List<Team> findByUserId(final UserId userId);
 }

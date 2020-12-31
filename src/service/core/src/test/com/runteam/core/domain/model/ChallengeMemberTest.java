@@ -2,9 +2,9 @@ package com.runteam.core.domain.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.OffsetDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,66 +13,40 @@ public class ChallengeMemberTest {
 	@Test
 	@DisplayName("Test challenge member details")
 	public void getDetailsTest() {
+		final ChallengeId challengeId = new ChallengeId("challengeId");
 		final TeamId teamId = new TeamId("teamId");
-		final OffsetDateTime activeFrom = OffsetDateTime.now();
-		final OffsetDateTime activeTo = OffsetDateTime.MAX;
-		final Statistics statistics = new Statistics(10L, 10L, 10L);
-		final ChallengeMember challengeMember = new ChallengeMember(teamId,
-		                                                            activeFrom,
-		                                                            activeTo,
-		                                                            statistics);
+		final ChallengeMember challengeMember = new ChallengeMember(ChallengeMemberId.randomId(),
+		                                                            challengeId,
+		                                                            teamId);
+		challengeMember.setStatus(Status.ACTIVE);
+
+		assertEquals(challengeMember.getChallengeId(), challengeId);
+		assertNotNull(challengeMember.getCreationDate());
 		assertEquals(challengeMember.getTeamId(), teamId);
-		assertEquals(challengeMember.getActiveFrom(), activeFrom);
-		assertEquals(challengeMember.getActiveTo(), activeTo);
-		assertEquals(challengeMember.getStatistics(), statistics);
+		assertEquals(challengeMember.getStatus(), Status.ACTIVE);
+		assertEquals(challengeMember.getStatistics(), Statistics.zero());
 	}
 
 	@Test
-	@DisplayName("Test challenge member is active")
+	@DisplayName("Test challenge member is empty")
 	public void memberIsEmptyTest() {
 		assertTrue(ChallengeMember.EMPTY.isEmpty());
 	}
 
 	@Test
-	@DisplayName("Test challenge member is active")
+	@DisplayName("Test challenge member is not empty")
 	public void memberIsNotEmptyTest() {
-		final ChallengeMember challengeMember = new ChallengeMember(new TeamId("teamId"),
-		                                                            OffsetDateTime.now(),
-		                                                            OffsetDateTime.MAX,
-		                                                            Statistics.zero());
+		final ChallengeMember challengeMember = new ChallengeMember(ChallengeMemberId.randomId());
 		assertFalse(challengeMember.isEmpty());
-	}
-
-	@Test
-	@DisplayName("Test challenge member is active")
-	public void memberActiveTest() {
-		final ChallengeMember challengeMember = new ChallengeMember(new TeamId("teamId"),
-		                                                            OffsetDateTime.now(),
-		                                                            OffsetDateTime.MAX,
-		                                                            Statistics.zero());
-		assertTrue(challengeMember.isActive());
-	}
-
-	@Test
-	@DisplayName("Test challenge member is inactive")
-	public void memberInactiveTest() {
-		final ChallengeMember challengeMember = new ChallengeMember(new TeamId("teamId"),
-		                                                            OffsetDateTime.now(),
-		                                                            OffsetDateTime.now().minusDays(1),
-		                                                            Statistics.zero());
-		assertTrue(challengeMember.isInactive());
 	}
 
 	@Test
 	@DisplayName("Test challenge member add statistics")
 	public void memberAddStatisticsTest() {
-		final ChallengeMember challengeMember = new ChallengeMember(new TeamId("teamId"),
-		                                                            OffsetDateTime.now(),
-		                                                            OffsetDateTime.now().minusDays(1),
-		                                                            Statistics.zero());
-		final Statistics newStatistics = challengeMember.addStatistics(new Statistics(10L, 10L, 10L));
-		assertEquals(newStatistics.getTotalMeters(), 10);
-		assertEquals(newStatistics.getTotalSeconds(), 10);
-		assertEquals(newStatistics.getElevationInMeters(), 10);
+		final ChallengeMember challengeMember = new ChallengeMember(ChallengeMemberId.randomId());
+		challengeMember.addStatistics(new Statistics(10L, 10L, 10L));
+		assertEquals(challengeMember.getStatistics().getTotalMeters(), 10);
+		assertEquals(challengeMember.getStatistics().getTotalSeconds(), 10);
+		assertEquals(challengeMember.getStatistics().getElevationInMeters(), 10);
 	}
 }

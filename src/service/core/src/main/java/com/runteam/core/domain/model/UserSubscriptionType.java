@@ -3,8 +3,12 @@ package com.runteam.core.domain.model;
 // Value Object
 
 public enum UserSubscriptionType {
-	BASIC(3, 3, 30, 3, 30),
-	PREMIUM(10, 10, 100, 10, 100);
+	BASIC(3, 3, 3, 30, 3, 30),
+	PREMIUM(10, 10, 10, 100, 10, 100),
+	ADMIN(1000000, 1000000, 1000000, 1000000, 1000000, 1000000);
+
+	// Max number of teams a user can belong to
+	private final int maxTeamsUserCanBelong;
 
 	// Max number of teams a user can create
 	private final int maxTeams;
@@ -12,25 +16,31 @@ public enum UserSubscriptionType {
 	// Max number of challenges a user can create
 	private final int maxChallenges;
 
-	// Max number of user a team can have
-	private final int maxTeamsUserBelongs;
+	// Max number of user a team created by the user can have
+	private final int maxTeamMembers;
 
-	// Max number of challenge a team can belong to
-	private final int maxChallengesTeamBelongs;
+	// Max number of challenge a team created by the user can belong to
+	private final int maxChallengesTeamCanBelong;
 
-	// Max number of teams a challenge can have
+	// Max number of teams a challenge created by the user can have
 	private final int maxChallengeTeams;
 
-	UserSubscriptionType(final int maxTeams,
+	UserSubscriptionType(final int maxTeamsUserCanBelong,
+	                     final int maxTeams,
 	                     final int maxChallenges,
-	                     final int maxTeamsUserBelongs,
-	                     final int maxChallengesTeamBelongs,
+	                     final int maxTeamMembers,
+	                     final int maxChallengesTeamCanBelong,
 	                     final int maxChallengeTeams) {
+		this.maxTeamsUserCanBelong = maxTeamsUserCanBelong;
 		this.maxTeams = maxTeams;
 		this.maxChallenges = maxChallenges;
-		this.maxTeamsUserBelongs = maxTeamsUserBelongs;
-		this.maxChallengesTeamBelongs = maxChallengesTeamBelongs;
+		this.maxTeamMembers = maxTeamMembers;
+		this.maxChallengesTeamCanBelong = maxChallengesTeamCanBelong;
 		this.maxChallengeTeams = maxChallengeTeams;
+	}
+
+	public int getMaxTeamsUserCanBelong() {
+		return maxTeamsUserCanBelong;
 	}
 
 	public int getMaxTeams() {
@@ -41,12 +51,12 @@ public enum UserSubscriptionType {
 		return maxChallenges;
 	}
 
-	public int getMaxTeamsUserBelongs() {
-		return maxTeamsUserBelongs;
+	public int getMaxTeamMembers() {
+		return maxTeamMembers;
 	}
 
-	public int getMaxChallengesTeamBelongs() {
-		return maxChallengesTeamBelongs;
+	public int getMaxChallengesTeamCanBelong() {
+		return maxChallengesTeamCanBelong;
 	}
 
 	public int getMaxChallengeTeams() {

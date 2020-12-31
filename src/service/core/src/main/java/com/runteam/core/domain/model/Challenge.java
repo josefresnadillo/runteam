@@ -1,39 +1,30 @@
 package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.ZoneId;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 // Aggregate
 
 public class Challenge {
 
-	private static final OffsetDateTime DEFAULT_ACTIVATION_DATE = OffsetDateTime.of(2048,
-	                                                                                1,
-	                                                                                1,
-	                                                                                0,
-	                                                                                0,
-	                                                                                0,
-	                                                                                0,
-	                                                                                ZoneOffset.UTC);
-
 	private final ChallengeId id;
-	private final UserId owner;
+	private final UserId ownerId;
+	private final OffsetDateTime creationDate;
+	private final int numberOfMembers;
 	private ChallengeDetails details = ChallengeDetails.builder().build();
 	private Privacy privacy = Privacy.PUBLIC;
-	private OffsetDateTime activationDate = DEFAULT_ACTIVATION_DATE;
 	private ChallengeGoal goal = ChallengeGoal.zero();
-	private ChallengeStatus status = ChallengeStatus.INACTIVE;
-	private final List<ChallengeMember> members = new ArrayList<>();
-	private final List<TeamId> applicants = new ArrayList<>();
+	private Status status = Status.INACTIVE;
+	private Statistics statistics = Statistics.zero();
 
 	public Challenge(final ChallengeId id,
-	                 final UserId owner) {
+	                 final UserId ownerId,
+	                 final int numberOfMembers) {
 		this.id = id;
-		this.owner = owner;
+		this.ownerId = ownerId;
+		this.creationDate = OffsetDateTime.now(ZoneId.of("UTC"));
+		this.numberOfMembers = numberOfMembers;
 	}
 
 	public ChallengeId getId() {
@@ -41,7 +32,15 @@ public class Challenge {
 	}
 
 	public UserId getOwnerId() {
-		return owner;
+		return ownerId;
+	}
+
+	public OffsetDateTime getCreationDate() {
+		return creationDate;
+	}
+
+	public int getNumberOfMembers() {
+		return numberOfMembers;
 	}
 
 	public ChallengeDetails getDetails() {
@@ -60,14 +59,6 @@ public class Challenge {
 		this.privacy = privacy;
 	}
 
-	public OffsetDateTime getActivationDate() {
-		return activationDate;
-	}
-
-	public void setActivationDate(final OffsetDateTime activationDate) {
-		this.activationDate = activationDate;
-	}
-
 	public ChallengeGoal getGoal() {
 		return goal;
 	}
@@ -76,106 +67,47 @@ public class Challenge {
 		this.goal = goal;
 	}
 
-	public ChallengeStatus getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(final ChallengeStatus status) {
+	public void setStatus(final Status status) {
 		this.status = status;
 	}
 
-	public List<TeamId> getApplicants() {
-		return applicants;
+	public Statistics getStatistics() {
+		return statistics;
 	}
 
-	public Statistics statistics() {
-		return this.members.stream().map(ChallengeMember::getStatistics).reduce(Statistics.EMPTY, Statistics::add);
+	public void addStatistics(final Statistics statistics) {
+		this.statistics = this.statistics.add(statistics);
 	}
 
-	public List<ChallengeMember> getActiveMembers() {
-		return this.members.stream()
-		                   .filter(ChallengeMember::isActive)
-		                   .collect(Collectors.toList());
+	public boolean isPrivate(final UserId userId) {
+		return (this.getPrivacy() == Privacy.PRIVATE) && (!this.getOwnerId().equals(userId));
 	}
 
-	public List<ChallengeMember> getInactiveMembers() {
-		return this.members.stream()
-		                   .filter(ChallengeMember::isInactive)
-		                   .collect(Collectors.toList());
+	public ChallengeMember addMember(final TeamId teamId,
+	                                 final Status status) {
+		ChallengeMember challengeMember = new ChallengeMember(ChallengeMemberId.randomId(), this.getId(), teamId);
+		challengeMember.setStatus(status);
+		return challengeMember;
 	}
 
-	public void addApplicant(final TeamId teamId) {
-		if (!this.applicants.contains(teamId)) {
-			this.applicants.add(teamId);
+	public void checkIsActiveOrThrow(){
+		if (getStatus() != Status.ACTIVE) {
+			throw new DomainException(DomainExceptionCode.CHALLENGE_IS_NOT_ACTIVE);
 		}
-	}
-
-	public void removeApplicant(final TeamId teamId) {
-		this.applicants.remove(teamId);
-	}
-
-	public void addMember(final TeamId teamId,
-	                      final OffsetDateTime now) {
-		removeApplicant(teamId);
-		final ChallengeMember challengeMember = findChallengeMemberById(this.members, teamId);
-		if (challengeMember.isEmpty()) {
-			this.members.add(new ChallengeMember(teamId,
-			                                     now,
-			                                     ChallengeMember.MAX_TEAM_MEMBER_VALID_TO,
-			                                     Statistics.zero()));
-			return;
-		}
-		if (challengeMember.isInactive()) {
-			updateChallengeMember(challengeMember,
-			                      ChallengeMember.MAX_TEAM_MEMBER_VALID_TO, // to activate again
-			                      challengeMember.getStatistics());
-		}
-	}
-
-	public void removeMember(final TeamId teamId,
-	                         final OffsetDateTime now) {
-		final ChallengeMember challengeMember = findChallengeMemberById(this.getActiveMembers(), teamId);
-		updateChallengeMember(challengeMember,
-		                      now,
-		                      challengeMember.getStatistics());
-	}
-
-	public void addStatistics(final TeamId teamId,
-	                          final Statistics statistics) {
-		final ChallengeMember member = findChallengeMemberById(this.getActiveMembers(), teamId);
-		updateChallengeMember(member,
-		                      member.getActiveTo(),
-		                      member.addStatistics(statistics));
-	}
-
-	private void updateChallengeMember(final ChallengeMember challengeMember,
-	                                   final OffsetDateTime activeTo,
-	                                   final Statistics statistics) {
-		if (!challengeMember.isEmpty()) {
-			this.members.remove(challengeMember);
-			this.members.add(new ChallengeMember(challengeMember.getTeamId(),
-			                                     challengeMember.getActiveFrom(),
-			                                     activeTo,
-			                                     statistics));
-		}
-	}
-
-	private ChallengeMember findChallengeMemberById(final List<ChallengeMember> teams,
-	                                                final TeamId teamId) {
-		return teams.stream()
-		            .filter(t -> t.getTeamId().equals(teamId))
-		            .findFirst()
-		            .orElse(ChallengeMember.EMPTY);
 	}
 
 	@Override
 	public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 		Challenge challenge = (Challenge) o;
 		return Objects.equals(id, challenge.id);
 	}
@@ -189,13 +121,14 @@ public class Challenge {
 	public String toString() {
 		return "Challenge{" +
 			"id=" + id +
-			", owner=" + owner +
+			", owner=" + ownerId +
+			", creationDate=" + creationDate +
+			", numberOfTeams=" + numberOfMembers +
 			", details=" + details +
-			", activationDate=" + activationDate +
+			", privacy=" + privacy +
 			", goal=" + goal +
 			", status=" + status +
-			", activeTeams=" + members +
-			", applicantTeams=" + applicants +
+			", statistics=" + statistics +
 			'}';
 	}
 }

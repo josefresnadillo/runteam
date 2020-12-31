@@ -1,36 +1,37 @@
 package com.runteam.core.domain.service;
 
 import com.runteam.core.domain.model.*;
-import com.runteam.core.domain.repository.ChallengeRepository;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.logging.Logger;
 
 public class CreateChallenge {
 
-	private static final Logger LOGGER = Logger.getLogger(CreateChallenge.class.toString());
-
-	private final ChallengeRepository challengeRepository;
-
-	public CreateChallenge(final ChallengeRepository challengeRepository) {
-		this.challengeRepository = challengeRepository;
+	public CreateChallenge() {
 	}
 
-	public Challenge active(final User user,
+	public Challenge active(final User managerUser,
 	                        final ChallengeDetails details,
 	                        final ChallengeGoal goal) {
-		final List<Challenge> challenges = challengeRepository.findByOwnerId(user.getId());
-		if (challenges.size() >= user.getSubscriptionType().getMaxChallenges()) {
-			LOGGER.info(DomainExceptionCode.TOO_MANY_CHALLENGES.getMessage() + ": " + user);
-			throw new DomainException(DomainExceptionCode.TOO_MANY_CHALLENGES);
-		}
 
-		final Challenge challenge = new Challenge(ChallengeId.randomId(), user.getId());
+		// Check manager user is active
+		managerUser.checkIsActiveOrThrow();
+
+		// Check the number of challenges created by the user
+		managerUser.checkNumberOfChallengesCreatedOrThrow();
+
+		// Create challenge ACTIVE
+		return createChallenge(managerUser.getId(),
+		                       details,
+		                       goal);
+	}
+
+	private Challenge createChallenge(final UserId userId,
+	                                  final ChallengeDetails details,
+	                                  final ChallengeGoal goal) {
+		final Challenge challenge = new Challenge(ChallengeId.randomId(),
+		                                          userId,
+		                                          0);
 		challenge.setDetails(details);
 		challenge.setGoal(goal);
-		challenge.setActivationDate(OffsetDateTime.now());
-		challenge.setStatus(ChallengeStatus.ACTIVE);
+		challenge.setStatus(Status.ACTIVE);
 		return challenge;
 	}
 }

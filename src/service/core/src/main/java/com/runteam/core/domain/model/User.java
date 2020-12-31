@@ -1,37 +1,54 @@
 package com.runteam.core.domain.model;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.Objects;
 
-// Aggregate
+// Entity
 
 public class User {
 
-	private static final OffsetDateTime DEFAULT_ACTIVATION_DATE = OffsetDateTime.of(2048,
-	                                                                                1,
-	                                                                                1,
-	                                                                                0,
-	                                                                                0,
-	                                                                                0,
-	                                                                                0,
-	                                                                                ZoneOffset.UTC);
-
 	private final UserId id;
+	private final OffsetDateTime creationDate;
+	private final int numberOfTeamsCreated;
+	private final int numberOfChallengesCreated;
+	private final int numberOfMemberShips;
 	private UserCredentials credentials = UserCredentials.EMPTY;
 	private UserDetails details = UserDetails.builder().build();
 	private Status status = Status.INACTIVE;
 	private Privacy privacy = Privacy.PUBLIC;
 	private UserSubscriptionType subscriptionType = UserSubscriptionType.BASIC;
-	private OffsetDateTime activationDate = DEFAULT_ACTIVATION_DATE;
 	private Statistics statistics = Statistics.zero();
 
-	public User(final UserId id) {
+	public User(final UserId id,
+	            final int numberOfMemberShips,
+	            final int numberOfTeamsCreated,
+	            final int numberOfChallengesCreated) {
 		this.id = id;
+		this.creationDate = OffsetDateTime.now(ZoneId.of("UTC"));
+		this.numberOfMemberShips = numberOfMemberShips;
+		this.numberOfTeamsCreated = numberOfTeamsCreated;
+		this.numberOfChallengesCreated = numberOfChallengesCreated;
 	}
 
 	public UserId getId() {
 		return id;
+	}
+
+	public OffsetDateTime getCreationDate() {
+		return creationDate;
+	}
+
+	public int getNumberOfMemberShips() {
+		return numberOfMemberShips;
+	}
+
+	public int getNumberOfTeamsCreated() {
+		return numberOfTeamsCreated;
+	}
+
+	public int getNumberOfChallengesCreated() {
+		return numberOfChallengesCreated;
 	}
 
 	public UserCredentials getCredentials() {
@@ -74,34 +91,46 @@ public class User {
 		this.subscriptionType = subscriptionType;
 	}
 
-	public OffsetDateTime getActivationDate() {
-		return activationDate;
-	}
-
-	public void setActivationDate(final OffsetDateTime activationDate) {
-		this.activationDate = activationDate;
-	}
-
 	public Statistics getStatistics() {
 		return statistics;
-	}
-
-	public void setStatistics(final Statistics statistics) {
-		this.statistics = statistics;
 	}
 
 	public void addStatistics(final Statistics statistics) {
 		this.statistics = this.statistics.add(statistics);
 	}
 
+	public void checkIsActiveOrThrow(){
+		if (getStatus() != Status.ACTIVE) {
+			throw new DomainException(DomainExceptionCode.USER_IS_NOT_ACTIVE);
+		}
+	}
+
+	public void checkNumberOfTeamsCreatedOrThrow(){
+		if (getNumberOfTeamsCreated() >= getSubscriptionType().getMaxTeams()) {
+			throw new DomainException(DomainExceptionCode.USER_CREATED_TOO_MANY_TEAMS);
+		}
+	}
+
+	public void checkNumberOfChallengesCreatedOrThrow(){
+		if (getNumberOfChallengesCreated() >= getSubscriptionType().getMaxChallenges()) {
+			throw new DomainException(DomainExceptionCode.USER_CREATED_TOO_MANY_CHALLENGES);
+		}
+	}
+
+	public void checkNumberOfMembershipsOrThrow(){
+		if (getNumberOfMemberShips() >= getSubscriptionType().getMaxTeamsUserCanBelong()) {
+			throw new DomainException(DomainExceptionCode.USER_IN_TOO_MANY_TEAMS);
+		}
+	}
+
 	@Override
 	public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 		User user = (User) o;
 		return Objects.equals(id, user.id);
 	}
@@ -115,11 +144,15 @@ public class User {
 	public String toString() {
 		return "User{" +
 			"id=" + id +
+			", numberOfTeams=" + numberOfTeamsCreated +
+			", numberOfChallenges=" + numberOfChallengesCreated +
+			", numberOfTeamMembersships=" + numberOfMemberShips +
 			", credentials=" + credentials +
 			", details=" + details +
 			", status=" + status +
 			", privacy=" + privacy +
-			", activationDate=" + activationDate +
+			", subscriptionType=" + subscriptionType +
+			", activationDate=" + creationDate +
 			", statistics=" + statistics +
 			'}';
 	}
