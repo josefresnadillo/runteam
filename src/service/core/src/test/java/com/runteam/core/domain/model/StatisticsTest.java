@@ -11,9 +11,9 @@ public class StatisticsTest {
 	@DisplayName("Test zero statistics ok")
 	public void zeroStatisticsTest() {
 		final Statistics statistics = Statistics.zero();
-		assertEquals(statistics.getTotalMeters(), 0);
-		assertEquals(statistics.getTotalSeconds(), 0);
-		assertEquals(statistics.getElevationInMeters(), 0);
+		assertEquals(statistics.getTotalMeters().longValue(), 0L);
+		assertEquals(statistics.getTotalSeconds().longValue(), 0L);
+		assertEquals(statistics.getElevationInMeters().longValue(), 0L);
 	}
 
 	@Test
@@ -21,8 +21,8 @@ public class StatisticsTest {
 	public void addStatisticsTest() {
 		final Statistics one = new Statistics(5L, 5L, 5L);
 		final Statistics other = new Statistics(10L, 10L, 10L);
-		assertEquals(one.add(other).getTotalMeters(), 15);
-		assertEquals(one.add(other).getTotalSeconds(), 15);
-		assertEquals(one.add(other).getElevationInMeters(), 15);
+		assertEquals(one.add(other).getTotalMeters().longValue(), 15L);
+		assertEquals(one.add(other).getTotalSeconds().longValue(), 15L);
+		assertEquals(one.add(other).getElevationInMeters().longValue(), 15L);
 	}
 }

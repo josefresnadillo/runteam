@@ -14,7 +14,7 @@ public class ChallengeGoalTest {
 		final ChallengeGoal challengeGoal = ChallengeGoal.zero();
 		assertEquals(challengeGoal.getActiveFrom(), OffsetDateTime.MIN);
 		assertEquals(challengeGoal.getActiveTo(), OffsetDateTime.MAX);
-		assertEquals(challengeGoal.getMeters(), 0);
-		assertEquals(challengeGoal.getElevationInMeters(), 0);
+		assertEquals(challengeGoal.getMeters().longValue(), 0L);
+		assertEquals(challengeGoal.getElevationInMeters().longValue(), 0L);
 	}
 }

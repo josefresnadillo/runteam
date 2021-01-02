@@ -64,9 +64,9 @@ public class ChallengeTest {
 		challenge.addStatistics(new Statistics(10L, 10L, 10L));
 		challenge.addStatistics(new Statistics(5L, 5L, 5L));
 
-		assertEquals(challenge.getStatistics().getTotalMeters(), 15);
-		assertEquals(challenge.getStatistics().getTotalSeconds(), 15);
-		assertEquals(challenge.getStatistics().getElevationInMeters(), 15);
+		assertEquals(challenge.getStatistics().getTotalMeters().longValue(), 15L);
+		assertEquals(challenge.getStatistics().getTotalSeconds().longValue(), 15L);
+		assertEquals(challenge.getStatistics().getElevationInMeters().longValue(), 15L);
 	}
 
 	@Test

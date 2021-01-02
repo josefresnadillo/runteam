@@ -238,3 +238,5 @@ bazel-out
 bazel-bin
 
 .idea
+
+.openapi-generator/

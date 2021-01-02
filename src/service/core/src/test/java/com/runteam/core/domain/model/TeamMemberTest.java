@@ -67,8 +67,8 @@ public class TeamMemberTest {
 		                                             new TeamId("teamId"),
 		                                             new UserId("userId"));
 		teamMember.addStatistics(new Statistics(10L, 10L, 10L));
-		assertEquals(teamMember.getStatistics().getTotalMeters(), 10);
-		assertEquals(teamMember.getStatistics().getTotalSeconds(), 10);
-		assertEquals(teamMember.getStatistics().getElevationInMeters(), 10);
+		assertEquals(teamMember.getStatistics().getTotalMeters().longValue(), 10L);
+		assertEquals(teamMember.getStatistics().getTotalSeconds().longValue(), 10L);
+		assertEquals(teamMember.getStatistics().getElevationInMeters().longValue(), 10L);
 	}
 }

@@ -45,8 +45,8 @@ public class ChallengeMemberTest {
 	public void memberAddStatisticsTest() {
 		final ChallengeMember challengeMember = new ChallengeMember(ChallengeMemberId.randomId());
 		challengeMember.addStatistics(new Statistics(10L, 10L, 10L));
-		assertEquals(challengeMember.getStatistics().getTotalMeters(), 10);
-		assertEquals(challengeMember.getStatistics().getTotalSeconds(), 10);
-		assertEquals(challengeMember.getStatistics().getElevationInMeters(), 10);
+		assertEquals(challengeMember.getStatistics().getTotalMeters().longValue(), 10L);
+		assertEquals(challengeMember.getStatistics().getTotalSeconds().longValue(), 10L);
+		assertEquals(challengeMember.getStatistics().getElevationInMeters().longValue(), 10L);
 	}
 }
