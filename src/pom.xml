@@ -7,7 +7,7 @@
   <groupId>com.runteam</groupId>
   <artifactId>simple-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.0</version>
+  <version>1.0.0</version>
   <name>Runteam simple parent multi module</name>
 
   <properties>
@@ -23,6 +23,30 @@
   </modules>
 
   <dependencies>
+
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.12.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swaggerhub-maven-plugin</artifactId>
+      <version>1.0.8</version>
+    </dependency>
 
     <dependency>
       <groupId>org.junit.jupiter</groupId>
