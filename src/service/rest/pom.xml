@@ -10,7 +10,7 @@
   <parent>
     <groupId>com.runteam</groupId>
     <artifactId>simple-parent</artifactId>
-    <relativePath>..</relativePath>
+    <relativePath>../../pom.xml</relativePath>
     <version>1.0.0</version>
   </parent>
 

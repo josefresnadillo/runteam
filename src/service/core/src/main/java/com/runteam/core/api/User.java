@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2021-01-02T16:15:15.132260+01:00[Europe/Madrid]")public class User   {
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2021-01-02T16:39:11.316253+01:00[Europe/Madrid]")public class User   {
   
   private @Valid String id;
   private @Valid String username;
