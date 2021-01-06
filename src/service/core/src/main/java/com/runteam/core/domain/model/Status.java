@@ -6,5 +6,6 @@ public enum Status {
 	ACTIVE,
 	INACTIVE,
 	SUSPENDED,
-	PENDING
+	PENDING,
+	FINISHED
 }

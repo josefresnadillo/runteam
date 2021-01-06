@@ -19,6 +19,7 @@ public class User {
 	private Privacy privacy = Privacy.PUBLIC;
 	private UserSubscriptionType subscriptionType = UserSubscriptionType.BASIC;
 	private Statistics statistics = Statistics.zero();
+	private PersonalBest personalBest = PersonalBest.zero();
 
 	public User(final UserId id,
 	            final int numberOfMemberShips,
@@ -97,6 +98,14 @@ public class User {
 
 	public void addStatistics(final Statistics statistics) {
 		this.statistics = this.statistics.add(statistics);
+	}
+
+	public PersonalBest getPersonalBest() {
+		return personalBest;
+	}
+
+	public void updatePersonalBest(final PersonalBest personalBest) {
+		this.personalBest = PersonalBest.mix(this.personalBest, personalBest);
 	}
 
 	public void checkIsActiveOrThrow(){

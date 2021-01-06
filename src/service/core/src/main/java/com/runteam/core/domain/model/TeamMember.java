@@ -20,6 +20,7 @@ public class TeamMember {
 	private UserId userId = UserId.EMPTY;
 	private Status status = Status.INACTIVE;
 	private Statistics statistics = Statistics.zero();
+	private PersonalBest personalBest = PersonalBest.zero();
 
 	public TeamMember(final TeamMemberId id) {
 		this.id = id;
@@ -75,6 +76,14 @@ public class TeamMember {
 		this.statistics = this.statistics.add(statistics);
 	}
 
+	public PersonalBest getPersonalBest() {
+		return personalBest;
+	}
+
+	public void updatePersonalBest(final PersonalBest personalBest) {
+		this.personalBest = PersonalBest.mix(this.personalBest, personalBest);
+	}
+
 	public boolean isActive() {
 		return this.status == Status.ACTIVE;
 	}
@@ -103,12 +112,13 @@ public class TeamMember {
 	@Override
 	public String toString() {
 		return "TeamMember{" +
-			"id=" + id +
-			", creationDate=" + creationDate +
-			", teamId=" + teamId +
-			", userId=" + userId +
-			", status=" + status +
-			", statistics=" + statistics +
-			'}';
+				"id=" + id +
+				", creationDate=" + creationDate +
+				", teamId=" + teamId +
+				", userId=" + userId +
+				", status=" + status +
+				", statistics=" + statistics +
+				", personalBest=" + personalBest +
+				'}';
 	}
 }

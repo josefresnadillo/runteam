@@ -18,7 +18,7 @@ public enum DomainExceptionCode {
 	TEAM_ALREADY_IN_CHALLENGE("Team is already in challenge"),
 	TEAM_OWNER_IS_NECESSARY("Only team owner can perform this action"),
 
-	CHALLENGE_IS_NOT_ACTIVE("Challenge is not active"),
+	CHALLENGE_IS_NOT_ACTIVE("Challenge is not active or finished"),
 	CHALLENGE_HAS_TOO_MANY_TEAMS("Challenge has too many teams for subscription type");
 
 	private final String msg;
