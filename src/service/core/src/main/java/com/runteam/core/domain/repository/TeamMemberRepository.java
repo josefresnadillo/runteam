@@ -13,6 +13,8 @@ public interface TeamMemberRepository {
 
 	Team findById(final TeamMemberId teamMemberId);
 
+	List<TeamMember> findByUserId(final UserId userId);
+
 	List<TeamMember> findByTeamId(final TeamId teamId);
 
 	TeamMember findByTeamIdAndUserId(final TeamId teamId,

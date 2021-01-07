@@ -46,12 +46,25 @@ public class UserTest {
 		                           0,
 		                           0,
 		                           0);
-		user.addStatistics(new Statistics(10L, 10L, 10L));
-		user.addStatistics(new Statistics(5L, 5L, 5L));
+		user.addStatistics(new Statistics(1000L, 10L, 300L));
+		user.addStatistics(new Statistics(1100L, 5L, 400L));
 
-		assertEquals(user.getStatistics().getTotalMeters().longValue(), 15L);
-		assertEquals(user.getStatistics().getTotalSeconds().longValue(), 15L);
+		assertEquals(user.getStatistics().getTotalMeters().longValue(), 2100L);
+		assertEquals(user.getStatistics().getTotalSeconds().longValue(), 700L);
 		assertEquals(user.getStatistics().getElevationInMeters().longValue(), 15L);
+	}
+
+	@Test
+	@DisplayName("Test user add statistics and personal best")
+	public void personalBestTest() {
+		final User user = new User(new UserId("id"),
+				0,
+				0,
+				0);
+		user.addStatistics(new Statistics(1000L, 10L, 300L));
+		user.addStatistics(new Statistics(1000L, 5L, 400L));
+
+		assertEquals(user.getPersonalBest().getBest1kInSeconds().longValue(), 300L);
 	}
 
 	@Test

@@ -77,8 +77,8 @@ public class Team {
 		return statistics;
 	}
 
-	public void addStatistics(final Statistics statistics) {
-		this.statistics = this.statistics.add(statistics);
+	public void setStatistics(Statistics statistics) {
+		this.statistics = statistics;
 	}
 
 	public boolean isPrivate(final UserId userId) {

@@ -19,8 +19,8 @@ public class TeamMember {
 	private TeamId teamId = TeamId.EMPTY;
 	private UserId userId = UserId.EMPTY;
 	private Status status = Status.INACTIVE;
+	private PersonalBest personalBest = PersonalBest.max();
 	private Statistics statistics = Statistics.zero();
-	private PersonalBest personalBest = PersonalBest.zero();
 
 	public TeamMember(final TeamMemberId id) {
 		this.id = id;
@@ -68,20 +68,18 @@ public class TeamMember {
 		this.status = status;
 	}
 
+	public PersonalBest getPersonalBest() {
+		return personalBest;
+	}
+
 	public Statistics getStatistics() {
 		return statistics;
 	}
 
 	public void addStatistics(final Statistics statistics) {
 		this.statistics = this.statistics.add(statistics);
-	}
-
-	public PersonalBest getPersonalBest() {
-		return personalBest;
-	}
-
-	public void updatePersonalBest(final PersonalBest personalBest) {
-		this.personalBest = PersonalBest.mix(this.personalBest, personalBest);
+		final PersonalBest best = PersonalBest.create(statistics.getTotalMeters(), statistics.getTotalSeconds());
+		this.personalBest = PersonalBest.mix(this.personalBest, best);
 	}
 
 	public boolean isActive() {

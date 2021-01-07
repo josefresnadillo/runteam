@@ -27,11 +27,13 @@ public class TeamTest {
 		team.setDetails(teamDetails);
 		team.setStatus(Status.ACTIVE);
 		team.setPrivacy(Privacy.PUBLIC);
+		team.setStatistics(new Statistics(10L, 10L, 10L));
 
 		assertNotNull(team.getCreationDate());
 		assertEquals(team.getDetails(), teamDetails);
 		assertEquals(team.getStatus(), Status.ACTIVE);
 		assertEquals(team.getPrivacy(), Privacy.PUBLIC);
+		assertEquals(team.getStatistics(), new Statistics(10L, 10L, 10L));
 		assertNotNull(team.getCreationDate());
 	}
 
@@ -47,20 +49,6 @@ public class TeamTest {
 		assertEquals(result.getTeamId(), team.getId());
 		assertEquals(result.getUserId(), userId);
 		assertEquals(result.getStatus(), Status.ACTIVE);
-	}
-
-	@Test
-	@DisplayName("Test team add statistics")
-	public void AddStatisticsTest() {
-		final Team team = new Team(new TeamId("id"),
-		                           new UserId("ownerId"),
-		                           0,
-		                           0);
-		team.addStatistics(new Statistics(10L, 10L, 10L));
-		team.addStatistics(new Statistics(5L, 5L, 5L));
-		assertEquals(team.getStatistics().getTotalMeters().longValue(), 15L);
-		assertEquals(team.getStatistics().getTotalSeconds().longValue(), 15L);
-		assertEquals(team.getStatistics().getElevationInMeters().longValue(), 15L);
 	}
 
 	@Test

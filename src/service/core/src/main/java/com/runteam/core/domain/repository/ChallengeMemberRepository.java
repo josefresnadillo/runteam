@@ -15,6 +15,10 @@ public interface ChallengeMemberRepository {
 
 	List<ChallengeMember> findByChallengeId(final ChallengeId challengeId);
 
+	List<ChallengeMember> findByTeamId(final TeamId teamId);
+
+	List<ChallengeMember> findByTeamIds(final List<TeamId> teamIds);
+
 	ChallengeMember findByChallengeIdAndTeamId(final ChallengeId challengeId,
 	                                           final TeamId teamId);
 }

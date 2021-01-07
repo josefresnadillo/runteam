@@ -50,12 +50,12 @@ public class PersonalBest {
         return bestMarathonInSeconds;
     }
 
-    public static PersonalBest zero(){
-        return new PersonalBest(0L,
-                0L,
-                0L,
-                0L,
-                0L);
+    public static PersonalBest max(){
+        return new PersonalBest(Long.MAX_VALUE,
+                Long.MAX_VALUE,
+                Long.MAX_VALUE,
+                Long.MAX_VALUE,
+                Long.MAX_VALUE);
     }
 
     public static PersonalBest create(final Long totalMeters,
@@ -87,7 +87,7 @@ public class PersonalBest {
 
     private static Long calculateBest(final Long value1,
                                       final Long value2) {
-        return (value1 > value2) ? value2 : value1;
+        return (value1 < value2) ? value1 : value2;
     }
 
     @Override

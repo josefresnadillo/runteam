@@ -18,8 +18,8 @@ public class User {
 	private Status status = Status.INACTIVE;
 	private Privacy privacy = Privacy.PUBLIC;
 	private UserSubscriptionType subscriptionType = UserSubscriptionType.BASIC;
+	private PersonalBest personalBest = PersonalBest.max();
 	private Statistics statistics = Statistics.zero();
-	private PersonalBest personalBest = PersonalBest.zero();
 
 	public User(final UserId id,
 	            final int numberOfMemberShips,
@@ -92,20 +92,18 @@ public class User {
 		this.subscriptionType = subscriptionType;
 	}
 
+	public PersonalBest getPersonalBest() {
+		return personalBest;
+	}
+
 	public Statistics getStatistics() {
 		return statistics;
 	}
 
 	public void addStatistics(final Statistics statistics) {
 		this.statistics = this.statistics.add(statistics);
-	}
-
-	public PersonalBest getPersonalBest() {
-		return personalBest;
-	}
-
-	public void updatePersonalBest(final PersonalBest personalBest) {
-		this.personalBest = PersonalBest.mix(this.personalBest, personalBest);
+		final PersonalBest best = PersonalBest.create(statistics.getTotalMeters(), statistics.getTotalSeconds());
+		this.personalBest = PersonalBest.mix(this.personalBest, best);
 	}
 
 	public void checkIsActiveOrThrow(){
