@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2021-01-02T16:39:11.316253+01:00[Europe/Madrid]")public class UserDetails   {
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2021-01-24T20:28:43.552700+01:00[Europe/Madrid]")public class UserDetails   {
   
   private @Valid String email;
   private @Valid String imageUrl;
@@ -60,6 +60,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
   public void setImageUrl(String imageUrl) {
     this.imageUrl = imageUrl;
   }/**
+   * 1975/03/19
    **/
   public UserDetails birthday(String birthday) {
     this.birthday = birthday;
@@ -69,7 +70,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
   
 
   
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "1975/03/19")
   @JsonProperty("birthday")
   public String getBirthday() {
     return birthday;
@@ -78,6 +79,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
   public void setBirthday(String birthday) {
     this.birthday = birthday;
   }/**
+   * MALE | FEMALE
    **/
   public UserDetails sex(String sex) {
     this.sex = sex;
@@ -87,7 +89,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
   
 
   
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "MALE | FEMALE")
   @JsonProperty("sex")
   public String getSex() {
     return sex;

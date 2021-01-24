@@ -1,12 +1,12 @@
 package com.runteam.core.api;
 
-import com.runteam.core.api.PersonalBest;
+import com.runteam.core.api.ChallengeDetails;
+import com.runteam.core.api.ChallengeGoal;
+import com.runteam.core.api.ChallengeSubscriptionDetails;
 import com.runteam.core.api.Privacy;
 import com.runteam.core.api.Statistics;
 import com.runteam.core.api.Status;
-import com.runteam.core.api.UserDetails;
-import com.runteam.core.api.UserSubscriptionDetails;
-import com.runteam.core.api.UserSubscriptionType;
+import com.runteam.core.api.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
@@ -20,23 +20,23 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2021-01-24T20:28:43.552700+01:00[Europe/Madrid]")public class User   {
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2021-01-24T20:28:43.552700+01:00[Europe/Madrid]")public class Challenge   {
   
   private @Valid String id;
-  private @Valid String username;
+  private @Valid String name;
   private @Valid String displayName;
+  private @Valid User owner;
   private @Valid String creationDate;
-  private @Valid UserDetails details;
+  private @Valid ChallengeDetails details;
+  private @Valid ChallengeGoal goal;
   private @Valid Status status;
   private @Valid Privacy privacy;
-  private @Valid UserSubscriptionType subscriptionType;
-  private @Valid UserSubscriptionDetails subscriptionDetails;
-  private @Valid PersonalBest personalBest;
+  private @Valid ChallengeSubscriptionDetails subscriptionDetails;
   private @Valid Statistics statistics;
 
   /**
    **/
-  public User id(String id) {
+  public Challenge id(String id) {
     this.id = id;
     return this;
   }
@@ -54,8 +54,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
     this.id = id;
   }/**
    **/
-  public User username(String username) {
-    this.username = username;
+  public Challenge name(String name) {
+    this.name = name;
     return this;
   }
 
@@ -63,16 +63,16 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
   
   @ApiModelProperty(value = "")
-  @JsonProperty("username")
-  public String getUsername() {
-    return username;
+  @JsonProperty("name")
+  public String getName() {
+    return name;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public void setName(String name) {
+    this.name = name;
   }/**
    **/
-  public User displayName(String displayName) {
+  public Challenge displayName(String displayName) {
     this.displayName = displayName;
     return this;
   }
@@ -89,9 +89,26 @@ import com.fasterxml.jackson.annotation.JsonValue;
   public void setDisplayName(String displayName) {
     this.displayName = displayName;
   }/**
-   * 2021/03/19
    **/
-  public User creationDate(String creationDate) {
+  public Challenge owner(User owner) {
+    this.owner = owner;
+    return this;
+  }
+
+  
+
+  
+  @ApiModelProperty(value = "")
+  @JsonProperty("owner")
+  public User getOwner() {
+    return owner;
+  }
+
+  public void setOwner(User owner) {
+    this.owner = owner;
+  }/**
+   **/
+  public Challenge creationDate(String creationDate) {
     this.creationDate = creationDate;
     return this;
   }
@@ -99,7 +116,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
   
 
   
-  @ApiModelProperty(value = "2021/03/19")
+  @ApiModelProperty(value = "")
   @JsonProperty("creationDate")
   public String getCreationDate() {
     return creationDate;
@@ -109,7 +126,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
     this.creationDate = creationDate;
   }/**
    **/
-  public User details(UserDetails details) {
+  public Challenge details(ChallengeDetails details) {
     this.details = details;
     return this;
   }
@@ -119,15 +136,33 @@ import com.fasterxml.jackson.annotation.JsonValue;
   
   @ApiModelProperty(value = "")
   @JsonProperty("details")
-  public UserDetails getDetails() {
+  public ChallengeDetails getDetails() {
     return details;
   }
 
-  public void setDetails(UserDetails details) {
+  public void setDetails(ChallengeDetails details) {
     this.details = details;
   }/**
    **/
-  public User status(Status status) {
+  public Challenge goal(ChallengeGoal goal) {
+    this.goal = goal;
+    return this;
+  }
+
+  
+
+  
+  @ApiModelProperty(value = "")
+  @JsonProperty("goal")
+  public ChallengeGoal getGoal() {
+    return goal;
+  }
+
+  public void setGoal(ChallengeGoal goal) {
+    this.goal = goal;
+  }/**
+   **/
+  public Challenge status(Status status) {
     this.status = status;
     return this;
   }
@@ -145,7 +180,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
     this.status = status;
   }/**
    **/
-  public User privacy(Privacy privacy) {
+  public Challenge privacy(Privacy privacy) {
     this.privacy = privacy;
     return this;
   }
@@ -163,25 +198,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
     this.privacy = privacy;
   }/**
    **/
-  public User subscriptionType(UserSubscriptionType subscriptionType) {
-    this.subscriptionType = subscriptionType;
-    return this;
-  }
-
-  
-
-  
-  @ApiModelProperty(value = "")
-  @JsonProperty("subscriptionType")
-  public UserSubscriptionType getSubscriptionType() {
-    return subscriptionType;
-  }
-
-  public void setSubscriptionType(UserSubscriptionType subscriptionType) {
-    this.subscriptionType = subscriptionType;
-  }/**
-   **/
-  public User subscriptionDetails(UserSubscriptionDetails subscriptionDetails) {
+  public Challenge subscriptionDetails(ChallengeSubscriptionDetails subscriptionDetails) {
     this.subscriptionDetails = subscriptionDetails;
     return this;
   }
@@ -191,33 +208,15 @@ import com.fasterxml.jackson.annotation.JsonValue;
   
   @ApiModelProperty(value = "")
   @JsonProperty("subscriptionDetails")
-  public UserSubscriptionDetails getSubscriptionDetails() {
+  public ChallengeSubscriptionDetails getSubscriptionDetails() {
     return subscriptionDetails;
   }
 
-  public void setSubscriptionDetails(UserSubscriptionDetails subscriptionDetails) {
+  public void setSubscriptionDetails(ChallengeSubscriptionDetails subscriptionDetails) {
     this.subscriptionDetails = subscriptionDetails;
   }/**
    **/
-  public User personalBest(PersonalBest personalBest) {
-    this.personalBest = personalBest;
-    return this;
-  }
-
-  
-
-  
-  @ApiModelProperty(value = "")
-  @JsonProperty("personalBest")
-  public PersonalBest getPersonalBest() {
-    return personalBest;
-  }
-
-  public void setPersonalBest(PersonalBest personalBest) {
-    this.personalBest = personalBest;
-  }/**
-   **/
-  public User statistics(Statistics statistics) {
+  public Challenge statistics(Statistics statistics) {
     this.statistics = statistics;
     return this;
   }
@@ -243,40 +242,40 @@ import com.fasterxml.jackson.annotation.JsonValue;
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    User user = (User) o;
-    return Objects.equals(this.id, user.id) &&
-        Objects.equals(this.username, user.username) &&
-        Objects.equals(this.displayName, user.displayName) &&
-        Objects.equals(this.creationDate, user.creationDate) &&
-        Objects.equals(this.details, user.details) &&
-        Objects.equals(this.status, user.status) &&
-        Objects.equals(this.privacy, user.privacy) &&
-        Objects.equals(this.subscriptionType, user.subscriptionType) &&
-        Objects.equals(this.subscriptionDetails, user.subscriptionDetails) &&
-        Objects.equals(this.personalBest, user.personalBest) &&
-        Objects.equals(this.statistics, user.statistics);
+    Challenge challenge = (Challenge) o;
+    return Objects.equals(this.id, challenge.id) &&
+        Objects.equals(this.name, challenge.name) &&
+        Objects.equals(this.displayName, challenge.displayName) &&
+        Objects.equals(this.owner, challenge.owner) &&
+        Objects.equals(this.creationDate, challenge.creationDate) &&
+        Objects.equals(this.details, challenge.details) &&
+        Objects.equals(this.goal, challenge.goal) &&
+        Objects.equals(this.status, challenge.status) &&
+        Objects.equals(this.privacy, challenge.privacy) &&
+        Objects.equals(this.subscriptionDetails, challenge.subscriptionDetails) &&
+        Objects.equals(this.statistics, challenge.statistics);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, username, displayName, creationDate, details, status, privacy, subscriptionType, subscriptionDetails, personalBest, statistics);
+    return Objects.hash(id, name, displayName, owner, creationDate, details, goal, status, privacy, subscriptionDetails, statistics);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class User {\n");
+    sb.append("class Challenge {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    username: ").append(toIndentedString(username)).append("\n");
+    sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    displayName: ").append(toIndentedString(displayName)).append("\n");
+    sb.append("    owner: ").append(toIndentedString(owner)).append("\n");
     sb.append("    creationDate: ").append(toIndentedString(creationDate)).append("\n");
     sb.append("    details: ").append(toIndentedString(details)).append("\n");
+    sb.append("    goal: ").append(toIndentedString(goal)).append("\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("    privacy: ").append(toIndentedString(privacy)).append("\n");
-    sb.append("    subscriptionType: ").append(toIndentedString(subscriptionType)).append("\n");
     sb.append("    subscriptionDetails: ").append(toIndentedString(subscriptionDetails)).append("\n");
-    sb.append("    personalBest: ").append(toIndentedString(personalBest)).append("\n");
     sb.append("    statistics: ").append(toIndentedString(statistics)).append("\n");
     sb.append("}");
     return sb.toString();

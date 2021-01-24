@@ -2,6 +2,8 @@ package com.runteam.core.domain.model;
 
 // Value Object
 
+import java.util.Arrays;
+
 public enum UserSubscriptionType {
 	BASIC(3, 3, 3, 30, 3, 30),
 	PREMIUM(10, 10, 10, 100, 10, 100),
@@ -61,5 +63,12 @@ public enum UserSubscriptionType {
 
 	public int getMaxChallengeTeams() {
 		return maxChallengeTeams;
+	}
+
+	public static UserSubscriptionType adapt(final String type){
+		return Arrays.stream(UserSubscriptionType.values())
+				.filter(subscriptionType -> subscriptionType.name().equalsIgnoreCase(type))
+				.findFirst()
+				.orElse(UserSubscriptionType.BASIC);
 	}
 }

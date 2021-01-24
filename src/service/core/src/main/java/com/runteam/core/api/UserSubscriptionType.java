@@ -10,15 +10,15 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Privacy
  */
-public enum Privacy {
+public enum UserSubscriptionType {
   
-  PUBLIC("PUBLIC"),
+  BASIC("BASIC"),
   
-  PRIVATE("PRIVATE");
+  PREMIUM("PREMIUM");
 
   private String value;
 
-  Privacy(String value) {
+  UserSubscriptionType(String value) {
     this.value = value;
   }
 
@@ -29,8 +29,8 @@ public enum Privacy {
   }
 
   @JsonCreator
-  public static Privacy fromValue(String value) {
-    for (Privacy b : Privacy.values()) {
+  public static UserSubscriptionType fromValue(String value) {
+    for (UserSubscriptionType b : UserSubscriptionType.values()) {
       if (b.value.equals(value)) {
         return b;
       }

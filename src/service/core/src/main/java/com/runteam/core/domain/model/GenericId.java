@@ -16,7 +16,7 @@ public class GenericId {
 		return id;
 	}
 
-	public static String generate() {
+	protected static String generate() {
 		return UUID.randomUUID().toString();
 	}
 }

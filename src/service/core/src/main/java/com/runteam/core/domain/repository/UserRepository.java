@@ -5,9 +5,9 @@ import com.runteam.core.domain.model.UserId;
 
 public interface UserRepository {
 
-	boolean save(final User user);
+	void save(final User user);
 
-	boolean delete(final User user);
+	void delete(final User user);
 
 	User findById(final UserId userId);
 }
