@@ -6,7 +6,6 @@ import com.runteam.core.api.Status;
 import com.runteam.core.api.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 
@@ -18,11 +17,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2021-01-24T20:28:43.552700+01:00[Europe/Madrid]")public class UserTeamMember   {
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2021-01-30T21:50:04.103897+01:00[Europe/Madrid]")public class UserTeamMember   {
   
   private @Valid String id;
   private @Valid User user;
-  private @Valid Date creationDate;
+  private @Valid String creationDate;
   private @Valid Status status;
   private @Valid PersonalBest personalBest;
   private @Valid Statistics statistics;
@@ -65,7 +64,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
     this.user = user;
   }/**
    **/
-  public UserTeamMember creationDate(Date creationDate) {
+  public UserTeamMember creationDate(String creationDate) {
     this.creationDate = creationDate;
     return this;
   }
@@ -75,11 +74,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
   
   @ApiModelProperty(value = "")
   @JsonProperty("creationDate")
-  public Date getCreationDate() {
+  public String getCreationDate() {
     return creationDate;
   }
 
-  public void setCreationDate(Date creationDate) {
+  public void setCreationDate(String creationDate) {
     this.creationDate = creationDate;
   }/**
    **/

@@ -2,7 +2,6 @@ package com.runteam.core.api;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 
@@ -14,12 +13,12 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2021-01-24T20:28:43.552700+01:00[Europe/Madrid]")public class ChallengeGoal   {
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2021-01-30T21:50:04.103897+01:00[Europe/Madrid]")public class ChallengeGoal   {
   
   private @Valid Long meters;
   private @Valid Long elevationInMeters;
-  private @Valid Date activeFrom;
-  private @Valid Date activeTo;
+  private @Valid String activeFrom;
+  private @Valid String activeTo;
 
   /**
    **/
@@ -59,7 +58,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
     this.elevationInMeters = elevationInMeters;
   }/**
    **/
-  public ChallengeGoal activeFrom(Date activeFrom) {
+  public ChallengeGoal activeFrom(String activeFrom) {
     this.activeFrom = activeFrom;
     return this;
   }
@@ -69,15 +68,15 @@ import com.fasterxml.jackson.annotation.JsonValue;
   
   @ApiModelProperty(value = "")
   @JsonProperty("activeFrom")
-  public Date getActiveFrom() {
+  public String getActiveFrom() {
     return activeFrom;
   }
 
-  public void setActiveFrom(Date activeFrom) {
+  public void setActiveFrom(String activeFrom) {
     this.activeFrom = activeFrom;
   }/**
    **/
-  public ChallengeGoal activeTo(Date activeTo) {
+  public ChallengeGoal activeTo(String activeTo) {
     this.activeTo = activeTo;
     return this;
   }
@@ -87,11 +86,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
   
   @ApiModelProperty(value = "")
   @JsonProperty("activeTo")
-  public Date getActiveTo() {
+  public String getActiveTo() {
     return activeTo;
   }
 
-  public void setActiveTo(Date activeTo) {
+  public void setActiveTo(String activeTo) {
     this.activeTo = activeTo;
   }
 

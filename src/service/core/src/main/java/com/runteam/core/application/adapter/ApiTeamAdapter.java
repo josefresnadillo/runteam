@@ -32,14 +32,14 @@ public class ApiTeamAdapter {
                 .privacy(this.apiPrivacyAdapter.adaptFromDomain(domainTeam.getPrivacy()));
     }
 
-    public TeamDetails adaptFromDomain(final com.runteam.core.domain.model.TeamDetails domainDetails){
+    public TeamDetails adaptFromDomain(final com.runteam.core.domain.model.TeamDetails domainDetails) {
         return new TeamDetails()
                 .imageUrl(domainDetails.getImageUrl())
                 .city(domainDetails.getCity())
                 .countryCode(domainDetails.getCountryCode());
     }
 
-    private TeamSubscriptionDetails adaptSubscriptionDetailsFromDomain(final com.runteam.core.domain.model.Team domainTeam){
+    private TeamSubscriptionDetails adaptSubscriptionDetailsFromDomain(final com.runteam.core.domain.model.Team domainTeam) {
         return new TeamSubscriptionDetails()
                 .members((long) domainTeam.getNumberOfMembers())
                 .memberships((long) domainTeam.getNumberOfMemberships());

@@ -2,8 +2,6 @@ package com.runteam.core.application.adapter;
 
 import com.runteam.core.api.*;
 
-import java.util.Arrays;
-
 public class ApiChallengeAdapter {
 
     private final ApiUserAdapter apiUserAdapter;

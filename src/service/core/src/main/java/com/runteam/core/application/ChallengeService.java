@@ -45,8 +45,8 @@ public class ChallengeService {
         final com.runteam.core.domain.model.ChallengeGoal goal = com.runteam.core.domain.model.ChallengeGoal.builder()
                 .meters(apiGoal.getMeters())
                 .elevationInMeters(apiGoal.getElevationInMeters())
-                .activeFrom(OffsetDateTime.parse(apiGoal.getActiveFrom().toString()))
-                .activeTo(OffsetDateTime.parse(apiGoal.getActiveTo().toString()))
+                .activeFrom(OffsetDateTime.parse(apiGoal.getActiveFrom()))
+                .activeTo(OffsetDateTime.parse(apiGoal.getActiveTo()))
                 .build();
 
         final com.runteam.core.domain.model.Challenge newChallenge = this.createChallenge.active(owner, details, goal);

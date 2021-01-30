@@ -32,7 +32,7 @@ public class ApiUserAdapter {
                 .privacy(this.apiPrivacyAdapter.adaptFromDomain(domainUser.getPrivacy()));
     }
 
-    private UserDetails adaptFromDomain(final com.runteam.core.domain.model.UserDetails domainDetails){
+    private UserDetails adaptFromDomain(final com.runteam.core.domain.model.UserDetails domainDetails) {
         return new UserDetails()
                 .email(domainDetails.getEmail())
                 .imageUrl(domainDetails.getImageUrl())
@@ -43,7 +43,7 @@ public class ApiUserAdapter {
                 .countryCode(domainDetails.getCountryCode());
     }
 
-    private PersonalBest adaptFromDomain(final com.runteam.core.domain.model.PersonalBest domainPersonalBest){
+    private PersonalBest adaptFromDomain(final com.runteam.core.domain.model.PersonalBest domainPersonalBest) {
         return new PersonalBest()
                 .best1kInSeconds(domainPersonalBest.getBest1kInSeconds())
                 .best5kInSeconds(domainPersonalBest.getBest5kInSeconds())
@@ -52,14 +52,14 @@ public class ApiUserAdapter {
                 .bestMMInSeconds(domainPersonalBest.getBestMarathonInSeconds());
     }
 
-    private UserSubscriptionDetails adaptSubscriptionDetailsFromDomain(final com.runteam.core.domain.model.User domainUser){
+    private UserSubscriptionDetails adaptSubscriptionDetailsFromDomain(final com.runteam.core.domain.model.User domainUser) {
         return new UserSubscriptionDetails()
                 .challengesCreated((long) domainUser.getNumberOfChallengesCreated())
                 .memberships((long) domainUser.getNumberOfMemberShips())
                 .teamsCreated((long) domainUser.getNumberOfTeamsCreated());
     }
 
-    private UserSubscriptionType adaptFromDomain(final com.runteam.core.domain.model.UserSubscriptionType domainUserType){
+    private UserSubscriptionType adaptFromDomain(final com.runteam.core.domain.model.UserSubscriptionType domainUserType) {
         return Arrays.stream(UserSubscriptionType.values())
                 .filter(subscriptionType -> subscriptionType.name().equalsIgnoreCase(domainUserType.name()))
                 .findFirst()

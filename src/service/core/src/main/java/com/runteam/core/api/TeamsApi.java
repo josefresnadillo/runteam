@@ -18,7 +18,7 @@ import javax.validation.Valid;
 
 @Path("/teams")
 @Api(description = "the teams API")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2021-01-24T20:28:43.552700+01:00[Europe/Madrid]")public interface TeamsApi {
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2021-01-30T21:50:04.103897+01:00[Europe/Madrid]")public interface TeamsApi {
 
     @POST
     @Consumes({ "application/json" })
