@@ -15,7 +15,7 @@ public class ChallengeDetails {
 	private final String imageUrl;
 	private final List<String> tags; // Example #runbest #100km
 
-	public ChallengeDetails(final String name,
+	private ChallengeDetails(final String name,
 	                        final String displayName,
 	                        final String imageUrl,
 	                        final List<String> tags) {

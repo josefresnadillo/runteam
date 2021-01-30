@@ -32,17 +32,21 @@ public class PersonalBestTest {
 	@Test
 	@DisplayName("Test mix ok")
 	public void mixTest() {
-		final PersonalBest best1 = new PersonalBest(300L,
-				1500L,
-				3000L,
-				6329L,
-				12659L);
+		final PersonalBest best1 = PersonalBest.builder()
+				.best1kInSeconds(300L)
+				.best5kInSeconds(1500L)
+				.best10kInSeconds(3000L)
+				.bestHalfMarathonInSeconds(6329L)
+				.bestMarathonInSeconds(12659L)
+				.build();
 
-		final PersonalBest best2 = new PersonalBest(290L,
-				1450L,
-				3005L,
-				6400L,
-				12700L);
+		final PersonalBest best2 = PersonalBest.builder()
+				.best1kInSeconds(290L)
+				.best5kInSeconds(1450L)
+				.best10kInSeconds(3005L)
+				.bestHalfMarathonInSeconds(6400L)
+				.bestMarathonInSeconds(12700L)
+				.build();
 
 		final PersonalBest best = PersonalBest.mix(best1, best2);
 

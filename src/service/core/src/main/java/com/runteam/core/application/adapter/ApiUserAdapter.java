@@ -5,28 +5,34 @@ import java.util.Arrays;
 
 public class ApiUserAdapter {
 
-    public ApiUserAdapter() {}
+    private final ApiStatisticsAdapter apiStatisticsAdapter;
+    private final ApiStatusAdapter apiStatusAdapter;
+    private final ApiPrivacyAdapter apiPrivacyAdapter;
+
+    public ApiUserAdapter(final ApiStatisticsAdapter apiStatisticsAdapter,
+                          final ApiStatusAdapter apiStatusAdapter,
+                          final ApiPrivacyAdapter apiPrivacyAdapter) {
+        this.apiStatisticsAdapter = apiStatisticsAdapter;
+        this.apiStatusAdapter = apiStatusAdapter;
+        this.apiPrivacyAdapter = apiPrivacyAdapter;
+    }
 
     public User adaptFromDomain(final com.runteam.core.domain.model.User domainUser) {
-        final User apiUser = new User();
-
-        new User()
+        return new User()
                 .id(domainUser.getId().getId())
                 .username(domainUser.getCredentials().getUsername())
                 .displayName(domainUser.getDetails().getDisplayName())
-                .details(adapt(domainUser.getDetails()))
+                .details(adaptFromDomain(domainUser.getDetails()))
                 .creationDate(domainUser.getCreationDate().toLocalDate().toString())
-                .subscriptionType(adapt(domainUser.getSubscriptionType()))
-                .personalBest(adapt(domainUser.getPersonalBest()))
-                .subscriptionDetails(adapt(domainUser))
-                .statistics(adapt(domainUser.getStatistics()))
-                .privacy(adapt(domainUser.getPrivacy()))
-                .status(adapt(domainUser.getStatus()));
-
-        return apiUser;
+                .subscriptionType(adaptFromDomain(domainUser.getSubscriptionType()))
+                .personalBest(adaptFromDomain(domainUser.getPersonalBest()))
+                .subscriptionDetails(adaptSubscriptionDetailsFromDomain(domainUser))
+                .statistics(this.apiStatisticsAdapter.adaptFromDomain(domainUser.getStatistics()))
+                .status(this.apiStatusAdapter.adaptFromDomain(domainUser.getStatus()))
+                .privacy(this.apiPrivacyAdapter.adaptFromDomain(domainUser.getPrivacy()));
     }
 
-    private UserDetails adapt(final com.runteam.core.domain.model.UserDetails domainDetails){
+    private UserDetails adaptFromDomain(final com.runteam.core.domain.model.UserDetails domainDetails){
         return new UserDetails()
                 .email(domainDetails.getEmail())
                 .imageUrl(domainDetails.getImageUrl())
@@ -37,7 +43,7 @@ public class ApiUserAdapter {
                 .countryCode(domainDetails.getCountryCode());
     }
 
-    private PersonalBest adapt(final com.runteam.core.domain.model.PersonalBest domainPersonalBest){
+    private PersonalBest adaptFromDomain(final com.runteam.core.domain.model.PersonalBest domainPersonalBest){
         return new PersonalBest()
                 .best1kInSeconds(domainPersonalBest.getBest1kInSeconds())
                 .best5kInSeconds(domainPersonalBest.getBest5kInSeconds())
@@ -46,38 +52,17 @@ public class ApiUserAdapter {
                 .bestMMInSeconds(domainPersonalBest.getBestMarathonInSeconds());
     }
 
-    private Statistics adapt(final com.runteam.core.domain.model.Statistics domainStatistics){
-        return new Statistics()
-                .elevation(domainStatistics.getElevationInMeters())
-                .meters(domainStatistics.getTotalMeters())
-                .seconds(domainStatistics.getTotalSeconds());
-    }
-
-    private UserSubscriptionDetails adapt(final com.runteam.core.domain.model.User domainUser){
+    private UserSubscriptionDetails adaptSubscriptionDetailsFromDomain(final com.runteam.core.domain.model.User domainUser){
         return new UserSubscriptionDetails()
                 .challengesCreated((long) domainUser.getNumberOfChallengesCreated())
                 .memberships((long) domainUser.getNumberOfMemberShips())
                 .teamsCreated((long) domainUser.getNumberOfTeamsCreated());
     }
 
-    private Status adapt(final com.runteam.core.domain.model.Status domainStatus){
-        return Arrays.stream(Status.values())
-                .filter(status -> status.name().equalsIgnoreCase(domainStatus.name()))
-                .findFirst()
-                .orElse(Status.INACTIVE);
-    }
-
-    private UserSubscriptionType adapt(final com.runteam.core.domain.model.UserSubscriptionType domainUserType){
+    private UserSubscriptionType adaptFromDomain(final com.runteam.core.domain.model.UserSubscriptionType domainUserType){
         return Arrays.stream(UserSubscriptionType.values())
                 .filter(subscriptionType -> subscriptionType.name().equalsIgnoreCase(domainUserType.name()))
                 .findFirst()
                 .orElse(UserSubscriptionType.BASIC);
-    }
-
-    private Privacy adapt(final com.runteam.core.domain.model.Privacy domainPrivacy){
-        return Arrays.stream(Privacy.values())
-                .filter(privacy -> privacy.name().equalsIgnoreCase(domainPrivacy.name()))
-                .findFirst()
-                .orElse(Privacy.PUBLIC);
     }
 }

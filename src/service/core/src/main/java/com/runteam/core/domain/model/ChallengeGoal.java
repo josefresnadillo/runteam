@@ -14,7 +14,7 @@ public class ChallengeGoal {
 	private final OffsetDateTime activeFrom;
 	private final OffsetDateTime activeTo;
 
-	public ChallengeGoal(final Long meters,
+	private ChallengeGoal(final Long meters,
 	                     final Long elevationInMeters,
 	                     final OffsetDateTime activeFrom,
 	                     final OffsetDateTime activeTo) {
@@ -75,5 +75,47 @@ public class ChallengeGoal {
 			", activeFrom=" + activeFrom +
 			", activeTo=" + activeTo +
 			'}';
+	}
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+
+		private Long meters = 0L;
+		private Long elevationInMeters = 0L;
+		private OffsetDateTime activeFrom = OffsetDateTime.MIN;
+		private OffsetDateTime activeTo = OffsetDateTime.MAX;
+
+		public Builder() {
+		}
+
+		public Builder meters(final Long value) {
+			this.meters = value;
+			return this;
+		}
+
+		public Builder elevationInMeters(final Long value) {
+			this.elevationInMeters = value;
+			return this;
+		}
+
+		public Builder activeFrom(final OffsetDateTime value) {
+			this.activeFrom = value;
+			return this;
+		}
+
+		public Builder activeTo(final OffsetDateTime value) {
+			this.activeTo = value;
+			return this;
+		}
+
+		public ChallengeGoal build() {
+			return new ChallengeGoal(this.meters,
+					this.elevationInMeters,
+					this.activeFrom,
+					this.activeTo);
+		}
 	}
 }

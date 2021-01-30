@@ -1,8 +1,8 @@
 package com.runteam.core.domain.model;
 
-// Value Object
-
 import java.util.Objects;
+
+// Value Object
 
 public class PersonalBest {
 
@@ -18,7 +18,7 @@ public class PersonalBest {
     private final Long bestHalfMarathonInSeconds;
     private final Long bestMarathonInSeconds;
 
-    public PersonalBest(final Long best1kInSeconds,
+    private PersonalBest(final Long best1kInSeconds,
                         final Long best5kInSeconds,
                         final Long best10kInSeconds,
                         final Long bestHalfMarathonInSeconds,
@@ -116,5 +116,54 @@ public class PersonalBest {
                 ", best21kInSeconds=" + bestHalfMarathonInSeconds +
                 ", best42kInSeconds=" + bestMarathonInSeconds +
                 '}';
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private Long best1kInSeconds = 0L;
+        private Long best5kInSeconds = 0L;
+        private Long best10kInSeconds = 0L;
+        private Long bestHalfMarathonInSeconds = 0L;
+        private Long bestMarathonInSeconds = 0L;
+
+        public Builder() {
+        }
+
+        public Builder best1kInSeconds(final Long value) {
+            this.best1kInSeconds = value;
+            return this;
+        }
+
+        public Builder best5kInSeconds(final Long value) {
+            this.best5kInSeconds = value;
+            return this;
+        }
+
+        public Builder best10kInSeconds(final Long value) {
+            this.best10kInSeconds = value;
+            return this;
+        }
+
+        public Builder bestHalfMarathonInSeconds(final Long value) {
+            this.bestHalfMarathonInSeconds = value;
+            return this;
+        }
+
+        public Builder bestMarathonInSeconds(final Long value) {
+            this.bestMarathonInSeconds = value;
+            return this;
+        }
+
+        public PersonalBest build() {
+            return new PersonalBest(this.best1kInSeconds,
+                    this.best5kInSeconds,
+                    this.best10kInSeconds,
+                    this.bestHalfMarathonInSeconds,
+                    this.bestMarathonInSeconds);
+        }
     }
 }
