@@ -11,7 +11,7 @@ public interface ChallengeMemberRepository {
 
 	boolean save(final ChallengeMember challengeMember);
 
-	Team findById(final ChallengeMemberId challengeMemberId);
+	ChallengeMember findById(final ChallengeMemberId challengeMemberId);
 
 	List<ChallengeMember> findByChallengeId(final ChallengeId challengeId);
 

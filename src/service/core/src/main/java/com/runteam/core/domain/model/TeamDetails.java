@@ -25,11 +25,25 @@ public class TeamDetails {
 	                    final String imageUrl,
 	                    final String city,
 	                    final String countryCode) {
+		checkCountryCode(countryCode);
+		checkImageUrl(imageUrl);
 		this.name = name;
 		this.displayName = displayName;
 		this.imageUrl = imageUrl;
 		this.city = city;
 		this.countryCode = countryCode;
+	}
+
+	private void checkCountryCode(final String countryCode){
+		if (COUNTRIES.stream().noneMatch(c -> c.equalsIgnoreCase(countryCode))) {
+			throw new DomainException(COUNTRY_NOT_VALID);
+		}
+	}
+
+	private void checkImageUrl(final String url){
+		if (!UrlValidator.getInstance().isValid(url)) {
+			throw new DomainException(URL_NOT_VALID);
+		}
 	}
 
 	public String getName() {
@@ -110,9 +124,6 @@ public class TeamDetails {
 		}
 
 		public Builder imageUrl(final String value) {
-			if (!UrlValidator.getInstance().isValid(value)) {
-				throw new DomainException(URL_NOT_VALID);
-			}
 			this.imageUrl = value;
 			return this;
 		}
@@ -123,9 +134,6 @@ public class TeamDetails {
 		}
 
 		public Builder countryCode(final String value) {
-			if (COUNTRIES.stream().noneMatch(c -> c.equalsIgnoreCase(value))) {
-				throw new DomainException(COUNTRY_NOT_VALID);
-			}
 			this.countryCode = value;
 			return this;
 		}

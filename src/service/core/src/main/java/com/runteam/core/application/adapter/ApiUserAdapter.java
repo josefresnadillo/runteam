@@ -8,13 +8,16 @@ public class ApiUserAdapter {
     private final ApiStatisticsAdapter apiStatisticsAdapter;
     private final ApiStatusAdapter apiStatusAdapter;
     private final ApiPrivacyAdapter apiPrivacyAdapter;
+    private final ApiPersonalBestAdapter apiPersonalBestAdapter;
 
     public ApiUserAdapter(final ApiStatisticsAdapter apiStatisticsAdapter,
                           final ApiStatusAdapter apiStatusAdapter,
-                          final ApiPrivacyAdapter apiPrivacyAdapter) {
+                          final ApiPrivacyAdapter apiPrivacyAdapter,
+                          final ApiPersonalBestAdapter apiPersonalBestAdapter) {
         this.apiStatisticsAdapter = apiStatisticsAdapter;
         this.apiStatusAdapter = apiStatusAdapter;
         this.apiPrivacyAdapter = apiPrivacyAdapter;
+        this.apiPersonalBestAdapter = apiPersonalBestAdapter;
     }
 
     public User adaptFromDomain(final com.runteam.core.domain.model.User domainUser) {
@@ -25,7 +28,7 @@ public class ApiUserAdapter {
                 .details(adaptFromDomain(domainUser.getDetails()))
                 .creationDate(domainUser.getCreationDate().toLocalDate().toString())
                 .subscriptionType(adaptFromDomain(domainUser.getSubscriptionType()))
-                .personalBest(adaptFromDomain(domainUser.getPersonalBest()))
+                .personalBest(this.apiPersonalBestAdapter.adaptFromDomain(domainUser.getPersonalBest()))
                 .subscriptionDetails(adaptSubscriptionDetailsFromDomain(domainUser))
                 .statistics(this.apiStatisticsAdapter.adaptFromDomain(domainUser.getStatistics()))
                 .status(this.apiStatusAdapter.adaptFromDomain(domainUser.getStatus()))
@@ -41,15 +44,6 @@ public class ApiUserAdapter {
                 .language(domainDetails.getLanguage())
                 .city(domainDetails.getCity())
                 .countryCode(domainDetails.getCountryCode());
-    }
-
-    private PersonalBest adaptFromDomain(final com.runteam.core.domain.model.PersonalBest domainPersonalBest) {
-        return new PersonalBest()
-                .best1kInSeconds(domainPersonalBest.getBest1kInSeconds())
-                .best5kInSeconds(domainPersonalBest.getBest5kInSeconds())
-                .best10kInSeconds(domainPersonalBest.getBest10kInSeconds())
-                .bestMMInSeconds(domainPersonalBest.getBestHalfMarathonInSeconds())
-                .bestMMInSeconds(domainPersonalBest.getBestMarathonInSeconds());
     }
 
     private UserSubscriptionDetails adaptSubscriptionDetailsFromDomain(final com.runteam.core.domain.model.User domainUser) {

@@ -1,26 +1,26 @@
 package com.runteam.core.application;
 
-import com.runteam.core.api.User;
 import com.runteam.core.application.adapter.ApiUserAdapter;
 import com.runteam.core.domain.model.*;
 import com.runteam.core.domain.repository.UserRepository;
+
 import java.time.LocalDate;
 
-public class UserService {
+public class CreateUserUseCase {
 
     private final UserRepository userRepository;
     private final ApiUserAdapter apiUserAdapter;
 
-    public UserService(final UserRepository userRepository,
-                       final ApiUserAdapter apiUserAdapter) {
+    public CreateUserUseCase(final UserRepository userRepository,
+                             final ApiUserAdapter apiUserAdapter) {
         this.userRepository = userRepository;
         this.apiUserAdapter = apiUserAdapter;
     }
 
-    public User createActiveUser(final User newUser) {
-        com.runteam.core.domain.model.User domainUser = com.runteam.core.domain.model.UserFactory.createActive();
+    public com.runteam.core.api.User createActive(final com.runteam.core.api.User newUser) {
+        final User domainUser = com.runteam.core.domain.model.UserFactory.createActive();
 
-        com.runteam.core.domain.model.UserDetails domainDetails = UserDetails.builder()
+        final com.runteam.core.domain.model.UserDetails domainDetails = UserDetails.builder()
                 .displayName(newUser.getDisplayName())
                 .email(newUser.getDetails().getEmail())
                 .imageUrl(newUser.getDetails().getImageUrl())
@@ -39,7 +39,7 @@ public class UserService {
         // login is always through Strava. So, no secret is needed
         domainUser.setCredentials(new UserCredentials(newUser.getUsername(), ""));
 
-        userRepository.save(domainUser);
+        this.userRepository.save(domainUser);
 
         return this.apiUserAdapter.adaptFromDomain(domainUser);
     }

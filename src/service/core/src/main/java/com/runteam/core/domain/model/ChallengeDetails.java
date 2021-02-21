@@ -19,10 +19,17 @@ public class ChallengeDetails {
 	                        final String displayName,
 	                        final String imageUrl,
 	                        final List<String> tags) {
+		checkImageUrl(imageUrl);
 		this.name = name;
 		this.displayName = displayName;
 		this.imageUrl = imageUrl;
 		this.tags = tags;
+	}
+
+	private void checkImageUrl(final String url){
+		if (!UrlValidator.getInstance().isValid(url)) {
+			throw new DomainException(URL_NOT_VALID);
+		}
 	}
 
 	public String getName() {
@@ -96,9 +103,6 @@ public class ChallengeDetails {
 		}
 
 		public Builder imageUrl(final String value) {
-			if (!UrlValidator.getInstance().isValid(value)) {
-				throw new DomainException(URL_NOT_VALID);
-			}
 			this.imageUrl = value;
 			return this;
 		}

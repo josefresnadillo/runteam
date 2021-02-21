@@ -36,6 +36,9 @@ public class UserDetails {
 	                    final String city,
 	                    final String countryCode,
 	                    final String language) {
+		checkImageUrl(imageUrl);
+		checkCountryCode(countryCode);
+		checkLanguage(language);
 		this.displayName = displayName;
 		this.email = email;
 		this.imageUrl = imageUrl;
@@ -44,6 +47,24 @@ public class UserDetails {
 		this.city = city;
 		this.countryCode = countryCode;
 		this.language = language;
+	}
+
+	private void checkCountryCode(final String countryCode){
+		if (COUNTRIES.stream().noneMatch(c -> c.equalsIgnoreCase(countryCode))) {
+			throw new DomainException(COUNTRY_NOT_VALID);
+		}
+	}
+
+	private void checkImageUrl(final String url){
+		if (!UrlValidator.getInstance().isValid(url)) {
+			throw new DomainException(URL_NOT_VALID);
+		}
+	}
+
+	private void checkLanguage(final String language){
+		if (LANGUAGES.stream().noneMatch(c -> c.equalsIgnoreCase(language))) {
+			throw new DomainException(LANGUAGE_NOT_VALID);
+		}
 	}
 
 	public String getDisplayName() {
@@ -134,9 +155,6 @@ public class UserDetails {
 		}
 
 		public Builder imageUrl(final String value) {
-			if (!UrlValidator.getInstance().isValid(value)) {
-				throw new DomainException(URL_NOT_VALID);
-			}
 			this.imageUrl = value;
 			return this;
 		}
@@ -157,17 +175,11 @@ public class UserDetails {
 		}
 
 		public Builder countryCode(final String value) {
-			if (COUNTRIES.stream().noneMatch(c -> c.equalsIgnoreCase(value))) {
-				throw new DomainException(COUNTRY_NOT_VALID);
-			}
 			this.countryCode = value;
 			return this;
 		}
 
 		public Builder language(final String value) {
-			if (LANGUAGES.stream().noneMatch(c -> c.equalsIgnoreCase(value))) {
-				throw new DomainException(LANGUAGE_NOT_VALID);
-			}
 			this.language = value;
 			return this;
 		}
