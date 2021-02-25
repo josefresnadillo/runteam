@@ -131,7 +131,7 @@ public class UserDetails {
 
 		private String displayName = "";
 		private String email = "";
-		private String imageUrl = "";
+		private String imageUrl = "http://google.es";
 		private LocalDate birthday = LocalDate.of(1970, 1, 1);
 		private UserSex sex = UserSex.FEMALE;
 		private String city = "";

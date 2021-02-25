@@ -106,7 +106,7 @@ public class TeamDetails {
 
 		private String name = ""; // example "@team1"
 		private String displayName = ""; // example "The Best Team"
-		private String imageUrl = "";
+		private String imageUrl = "http://google.es";
 		private String city = "";
 		private String countryCode = "es"; // ISO 3166-1-alpha-2 2 letters
 

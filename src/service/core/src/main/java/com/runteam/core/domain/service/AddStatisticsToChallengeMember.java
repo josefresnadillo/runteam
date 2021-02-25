@@ -11,15 +11,16 @@ public class AddStatisticsToChallengeMember {
     public ChallengeMember add(final ChallengeMember challengeMember,
                                final Statistics statistics,
                                final OffsetDateTime date) {
-        if (checkTeamMember(challengeMember, date)) {
+
+        if (!challengeMember.isActive()) {
             return challengeMember;
         }
+
+        if (!challengeMember.getCreationDate().isBefore(date)) {
+            return challengeMember;
+        }
+
         challengeMember.addStatistics(statistics);
         return challengeMember;
-    }
-
-    private boolean checkTeamMember(final ChallengeMember challengeMember,
-                                    final OffsetDateTime date) {
-        return ((challengeMember.isActive()) || challengeMember.getCreationDate().isBefore(date));
     }
 }

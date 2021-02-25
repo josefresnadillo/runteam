@@ -86,7 +86,7 @@ public class ChallengeDetails {
 
 		private String name = ""; // Example @challenge1
 		private String displayName = ""; // Example The best challenge
-		private String imageUrl = "";
+		private String imageUrl = "http://google.es";
 		private List<String> tags = List.of(); // Example #runbest #100km
 
 		public Builder() {
